@@ -1,41 +1,40 @@
 const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
-const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex } = require('../utils/constants/failsSymbols')
+const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex } = require('../utils/constants/failsSymbols');
+const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
 
 const getDataBinance = async (req, res, next) => {
-  const response = await axios.get(ConstantURL.binance.price_change);
-  console.log(response)
-  let binanceObj = {}
-  for (const key of response.data) {
-    let isFail = failsSymbolsBinance.includes(key.symbol);
-    binanceObj[key.symbol] = { price: (isFail ? null : parseFloat(key.price)), url: (isFail ? null : key.url), isComprobated: key.isComprobated, volume: (isFail ? null : key.volume), bid: isFail || key.bid === 0 ? null : key.bid, ask: isFail || key.ask === 0 ? null : key.ask };
-  }
-  console.log(binanceObj)
-  if (response.status === 200) {
-    return res.json(binanceObj).status(200); 
+  const { data, status, statusText } = await axios.get(ConstantURL.binance.price_change)
+
+  let arrayData = data
+
+  arrayData.forEach(e => {
+    let coin = e.symbol;
+    let base = e.symbol.slice(-4);
+    let url = '';
+
+    if (base === 'BUSD' || base === 'USDT' || base === 'USDC') {
+      url = `${coin.slice(0, -4)}${'_'}${base}`
+    } else {
+      base = e.symbol.slice(-3);
+      url = `${coin.slice(0, -3)}${'_'}${base}`
+    }
+    e.url = `https://www.binance.com/es/trade/${url}`;
+    e.price = e.lastPrice;
+    e.volume = parseFloat(e.volume)
+    e.bid = parseFloat(e.bidPrice)
+    e.ask = parseFloat(e.askPrice)
+
+    e.isComprobated = comprobatedSymbols.includes(e.symbol)
+  })
+
+  const filteredData = hasFailedSymbols(failsSymbolsBinance, arrayData)
+
+  if (status === 200) {
+    return res.json(filteredData).status(200); 
   }
 
-  return res.json(response.statusText).status(response.status);
+  return res.json(statusText).status(status);
 }
-
-// const getDataKucoin = async (req, res, next) => {
-//   const response = await axios.get(ConstantURL.kucoin.url);
-
-//   if (response.status === 200) {
-//     return res.json(response.data).status(200); 
-//   }
-
-//   return res.json(response.statusText).status(response.status);
-// }
-
-// const getDataBybit= async (req, res, next) => {
-//   const response = await axios.get(ConstantURL.bybit.url);
-
-//   if (response.status === 200) {
-//     return res.json(response.data).status(200); 
-//   }
-
-//   return res.json(response.statusText).status(response.status);
-// }
 
 module.exports = { getDataBinance }
