@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const { getData } = require('../controllers/data.controller')
+const { getDataBinance } = require('../controllers/data.controller')
 
-router.get('/', getData);
+router.get('/', getDataBinance);
 
 module.exports = router;
