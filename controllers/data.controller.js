@@ -3,7 +3,7 @@ const { ConstantURL } = require('../utils/constants/url');
 const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex } = require('../utils/constants/failsSymbols');
 const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
 
-
+const errorResponse = 'El exchange tiene el siguente error: '
 const getDataBinance = async (req, res, next) => {
   const { data, status, statusText } = await axios.get(ConstantURL.binance.price_change)
   let binanceDataArr = data
@@ -28,7 +28,11 @@ const getDataBinance = async (req, res, next) => {
   if (status === 200) {
     return res.json(filteredData).status(200);
   }
+  console.log('data:', data);
+  console.log('STATUS: ' , status);
+  console.log('status text: ', statusText );
   return res.json(statusText).status(status);
+  
 }
 const getDataKucoin = async (req, res, next) => {
   const dataK = await axios.get(ConstantURL.kucoin.url)
@@ -141,6 +145,7 @@ const getDataCryptoDotCom = async (req, res, next) => {
 const getDataGateIo = async (req, res, next) => {
   const dataGateIo = await axios.get(ConstantURL.gate_io.url)
   const gateIoDataArr = dataGateIo.data
+  console.log('data:', dataGateIo);
   gateIoDataArr.forEach(e => {
     e.url = `https://www.gate.io/es/trade/${e.currency_pair}`;
     e.symbol = e.currency_pair.replace(/_/, '');
@@ -208,11 +213,12 @@ const getDataBitget = async (req, res, next) => {
     return res.json(statusText).status(status);
   }
 }
-/*const getDataKraken = async (req, res, next) => {
+const getDataKraken = async (req, res, next) => {
   const dataKraken = await axios.get(ConstantURL.kraken.url);
-  const krakenDataArr = dataKraken.data.result;
+  const krakenDataArr = Object.entries(dataKraken.data.result);
+  console.log('Data' , krakenDataArr);
   krakenDataArr.forEach(e => {
-    e.symbol = e;
+    e.symbol = e[0];
     let coin = e.symbol;
     let base = e.symbol.slice(-4);
     let url = '';
@@ -232,7 +238,7 @@ const getDataBitget = async (req, res, next) => {
   })
   const filteredData = hasFailedSymbols(comprobatedSymbols, krakenDataArr);
   return res.json(filteredData).status(200);
-}*/
+}
 const getDataOkx = async (req, res, next) => {
   const dataOkx = await axios.get(ConstantURL.okx.url);
   const OkxDataArr = dataOkx.data.data;
@@ -289,8 +295,26 @@ const getDataBitstamp = async(req, res, next)=>{
   });
   const filteredData = hasFailedSymbols(comprobatedSymbols, bitstampDataArr)
   return res.json(filteredData).status(200);
-
+}
+const getDataBitmart = async(req, res, next)=>{
+  const dataBitmart = await axios.get(ConstantURL.bitmart.url);
+  const bitmartDataArr= dataBitmart.data.data.tickers;
+  const status = dataBitmart.data.code;
+  bitmartDataArr.forEach(e => {
+    e.symbol = e.symbol.replace(/_/, '');
+    let isComprobated = comprobatedSymbols.includes(e.symbol);
+    e.isComprobated = isComprobated;
+    e.price = e.last_price;
+    e.volume = e.base_volume_24h;
+    e.bid = parseFloat(e.best_bid);
+    e.ask = parseFloat(e.best_ask);
+  })
+  const filteredData = hasFailedSymbols(comprobatedSymbols, bitmartDataArr);
+  if (status === 1000) {
+    return res.json(filteredData).status(200);
+  } else {
+    return res.json(statusText).status(status);
+  }
 }
 
-
-module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget,/*getDataKraken*/ getDataOkx, getDataBingx, getDataBitstamp }
+module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataKraken ,getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart }
