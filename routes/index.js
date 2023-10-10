@@ -4,7 +4,7 @@ const { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCrypto
 const cors = require('cors');
 
 
-router.get('/',cors(), getDataGateIo);
+router.get('/',cors(), getDataKraken);
 
 
 module.exports = router;
