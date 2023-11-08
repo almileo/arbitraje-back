@@ -388,5 +388,6 @@ const getDataBigone = async(req,res,next)=>{
   }
 }
 
+const getHome = ()=> {return '<h1>Es la Home</h1>'} 
 
-module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataKraken, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataDigifinex, getDataTidex, getDataBigone }
+module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataKraken, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataDigifinex, getDataTidex, getDataBigone, getHome }
