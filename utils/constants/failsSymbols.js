@@ -18,5 +18,23 @@ const failGateio = ['DATAUSDT', 'OAXUSDT', 'QIUSDT'];
 
 const failDigifinex = ['REIUSDT', 'GALUSDT', 'MDTUSDT'];
 
+const failByBit = [];
 
-module.exports = { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex }
+const failCryptoDotCom = [];
+
+const failLbank=[];
+
+const failOkx=[];
+
+const failBingx=[];
+
+const failBitstamp=[];
+
+const failBitmart=[];
+
+const failTidex=[];
+
+const failBigone=[];
+
+
+module.exports = { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failLbank, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone}
