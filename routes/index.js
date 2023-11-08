@@ -4,7 +4,7 @@ const { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCrypto
 const cors = require('cors');
 
 
-router.get('/',cors(), getDataBigone);
+router.get('/data',cors(), getDataBigone);
 
 //router.get('/arbitraje', cors(), getArbitrageTableData)
 
