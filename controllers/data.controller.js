@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
-const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone } = require('../utils/constants/failsSymbols');
+const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone, failLbank, failKraken } = require('../utils/constants/failsSymbols');
 const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
 
 
@@ -24,9 +24,8 @@ const getDataBinance = async (req, res, next) => {
     e.ask = parseFloat(e.askPrice)
     e.isComprobated = comprobatedSymbols.includes(e.symbol)
   })
-  const filteredData = hasFailedSymbols(failsSymbolsBinance, binanceDataArr)
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return binanceDataArr;
   }
   return res.json(statusText).status(status);
 
@@ -48,9 +47,8 @@ const getDataKucoin = async (req, res, next) => {
     e.bid = parseFloat(e.buy);
     e.ask = parseFloat(e.sell);
   })
-  const filteredData = hasFailedSymbols(failKucoin, kucoinDataArr)
-  if (status === 200) {
-    return res.json(filteredData).status(200);
+if (status === 200) {
+    return kucoinDataArr;
   } else {
     return res.json(statusText).status(status);
   }
@@ -76,9 +74,9 @@ const getDataBybit = async (req, res, next) => {
     e.bid = parseFloat(e.bid_price);
     e.ask = parseFloat(e.ask_price);
   })
-  const filteredData = hasFailedSymbols(failByBit, bybitDataArr)
+
   if (data.data.ret_code === 0) {
-    return res.json(filteredData).status(200);
+    return bybitDataArr;
   } else {
     return res.json(data.data.ret_msg).status(data.data.ret_code);
   }
@@ -105,10 +103,8 @@ const getDataHuobi = async (req, res, next) => {
     e.bid = parseFloat(e.bid);
     e.ask = parseFloat(e.ask);
   })
-  const filteredData = hasFailedSymbols(failHuobi, huobiDataArr)
-
   if (status === 'ok') {
-    return res.json(filteredData).status(200);
+    return huobiDataArr;
   } else {
     return res.json(status).status(status);
   }
@@ -127,9 +123,8 @@ const getDataCryptoDotCom = async (req, res, next) => {
     e.bid = parseFloat(e.b);
     e.ask = parseFloat(e.k);
   })
-  const filteredData = hasFailedSymbols(failCryptoDotCom, cryptoDotComDataArr)
   if (status === 0) {
-    return res.json(filteredData).status(200);
+    return cryptoDotComDataArr;
   } else {
     return res.json(status).status(status);
   }
@@ -147,9 +142,8 @@ const getDataGateIo = async (req, res, next) => {
     e.bid = parseFloat(e.highest_bid);
     e.ask = parseFloat(e.lowest_ask);
   })
-  const filteredData = hasFailedSymbols(failGateio, gateIoDataArr)
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return gateIoDataArr;
   } else {
     return res.json(statusText).status(status);
   }
@@ -168,9 +162,8 @@ const getDataMexc = async (req, res, next) => {
     e.bid = parseFloat(e.bid);
     e.ask = parseFloat(e.ask);
   })
-  const filteredData = hasFailedSymbols(failMexc, mexcDataArr);
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return mexcDataArr;
   } else {
     return res.json(status).status(status);
   }
@@ -187,9 +180,8 @@ const getDataLbank = async (req, res, next) => {
     e.price = e.ticker.latest;
     e.volume = e.ticker.vol;
   })
-  const filteredData = hasFailedSymbols(failLbank, lbankDataArr);
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return lbankDataArr
   } else {
     return res.json(statusText).status(status);
   }
@@ -207,9 +199,8 @@ const getDataBitget = async (req, res, next) => {
     e.bid = parseFloat(e.buyOne);
     e.ask = parseFloat(e.sellOne);
   })
-  const filteredData = hasFailedSymbols(failBitget, bitgetDataArr);
   if (status === "00000") {
-    return res.json(filteredData).status(200);
+    return bitgetDataArr;
   } else {
     return res.json(dataBitget.data.msg).status(status);
   }
@@ -217,7 +208,7 @@ const getDataBitget = async (req, res, next) => {
 const getDataKraken = async (req, res, next) => {
   const dataKraken = await axios.get(ConstantURL.kraken.url);
   const krakenDataArr = Object.entries(dataKraken.data.result);
-  const status= dataKraken.status;
+  const status = dataKraken.status;
   krakenDataArr.forEach(e => {
     e.symbol = e[0];
     let coin = e.symbol;
@@ -235,20 +226,19 @@ const getDataKraken = async (req, res, next) => {
     e.url = `https://trade.kraken.com/es-es/charts/KRAKEN:${url}`;
     e.volume = e[1].v[1];
     e.bid = parseFloat(e[1].b[0]);
-    e.ask = parseFloat(e[1].a[0]);   
+    e.ask = parseFloat(e[1].a[0]);
   })
-  const filteredData = hasFailedSymbols(comprobatedSymbols, krakenDataArr);
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return krakenDataArr;
   } else {
     return res.json(dataKraken.statusText).status(status);
   }
 }
 const getDataOkx = async (req, res, next) => {
   const dataOkx = await axios.get(ConstantURL.okx.url);
-  const OkxDataArr = dataOkx.data.data;
+  const okxDataArr = dataOkx.data.data;
   const status = dataOkx.data.code
-  OkxDataArr.forEach(e => {
+  okxDataArr.forEach(e => {
     e.url = `https://www.okx.com/es-es/trade-spot/${e.instId}`;
     e.symbol = e.instId.replace(/-/, '');
     let isComprobated = comprobatedSymbols.includes(e.symbol);
@@ -258,18 +248,18 @@ const getDataOkx = async (req, res, next) => {
     e.bid = parseFloat(e.bidPx);
     e.ask = parseFloat(e.askPx);
   })
-  const filteredData = hasFailedSymbols(failOkx, OkxDataArr)
+
   if (status === "0") {
-    return res.json(filteredData).status(200);
+    return okxDataArr;
   } else {
     return res.json(dataOkx.statusText).status(status);
   }
 }
 const getDataBingx = async (req, res, next) => {
   const dataBingx = await axios.get(ConstantURL.bingx.url);
-  const BingxDataArr = dataBingx.data.data.tickers;
+  const bingxDataArr = dataBingx.data.data.tickers;
   const status = dataBingx.data.code;
-  BingxDataArr.forEach(e => {
+  bingxDataArr.forEach(e => {
     e.symbol = e.symbol.replace(/-/, '');
     let isComprobated = comprobatedSymbols.includes(e.symbol);
     e.isComprobated = isComprobated;
@@ -279,9 +269,8 @@ const getDataBingx = async (req, res, next) => {
     e.bid = parseFloat(e.bidPrice);
     e.ask = parseFloat(e.askPrice)
   })
-  const filteredData = hasFailedSymbols(failBingx, BingxDataArr)
   if (status === 0) {
-    return res.json(filteredData).status(200);
+    return bingxDataArr;
   } else {
     return res.json(dataBingx.statusText).status(status);
   }
@@ -299,9 +288,8 @@ const getDataBitstamp = async (req, res, next) => {
     e.bid = parseFloat(e.bid);
     e.ask = parseFloat(e.ask);
   });
-  const filteredData = hasFailedSymbols(failBitstamp, bitstampDataArr)
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return bitstampDataArr;
   } else {
     return res.json(dataBitstamp.statusText).status(status);
   }
@@ -310,7 +298,6 @@ const getDataBitmart = async (req, res, next) => {
   const dataBitmart = await axios.get(ConstantURL.bitmart.url);
   const bitmartDataArr = dataBitmart.data.data.tickers;
   const status = dataBitmart.data.code;
-  console.log('status', status);
   bitmartDataArr.forEach(e => {
     e.symbol = e.symbol.replace(/_/, '');
     let isComprobated = comprobatedSymbols.includes(e.symbol);
@@ -320,9 +307,9 @@ const getDataBitmart = async (req, res, next) => {
     e.bid = parseFloat(e.best_bid);
     e.ask = parseFloat(e.best_ask);
   })
-  const filteredData = hasFailedSymbols(failBitmart, bitmartDataArr);
+
   if (status === 1000) {
-    return res.json(filteredData).status(200);
+    return bitmartDataArr;
   } else {
     return res.json(dataBitmart.statusText).status(status);
   }
@@ -331,8 +318,7 @@ const getDataDigifinex = async (req, res, next) => {
   const dataDigifinex = await axios.get(ConstantURL.digifinex.url);
   const digifinexDataArr = dataDigifinex.data.ticker;
   const status = dataDigifinex.status;
-  console.log('status', digifinexDataArr);
-  digifinexDataArr.forEach(e =>{
+  digifinexDataArr.forEach(e => {
     const split = e.symbol.split('_');
     e.symbol = e.symbol.replace(/_/, '').toUpperCase();
     e.price = e.last;
@@ -341,17 +327,16 @@ const getDataDigifinex = async (req, res, next) => {
     e.bid = parseFloat(e.buy);
     e.ask = parseFloat(e.sell);
   })
-  const filteredData = hasFailedSymbols(failDigifinex, digifinexDataArr)
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return digifinexDataArr;
   } else {
     return res.json(statusText).status(status);
   }
 }
-const getDataTidex = async(req, res, next) =>{
+const getDataTidex = async (req, res, next) => {
   const dataTidex = await axios.get(ConstantURL.tidex.url);
-  const status= dataTidex.status
-  const tidexDataArr =Object.entries(dataTidex.data.result);
+  const status = dataTidex.status
+  const tidexDataArr = Object.entries(dataTidex.data.result);
   tidexDataArr.forEach(e => {
     const split = e[0].split('_');
     e.symbol = e[0].replace(/_/, '');
@@ -361,33 +346,29 @@ const getDataTidex = async(req, res, next) =>{
     e.volume = e[1].ticker.vol;
     e.url = `https://tidex.com/es/exchange/${split[0]}/${split[1]}`;
   })
-  const filteredData = hasFailedSymbols(failTidex, tidexDataArr);
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return tidexDataArr;
   } else {
     return res.json(statusText).status(status);
   }
 }
-const getDataBigone = async(req,res,next)=>{
+const getDataBigone = async (req, res, next) => {
   const dataBigone = await axios.get(ConstantURL.bigone.url);
-  const status= dataBigone.status;
-  const bigoneDataArr= dataBigone.data.data;
+  const status = dataBigone.status;
+  const bigoneDataArr = dataBigone.data.data;
   bigoneDataArr.forEach(e => {
     e.symbol = e.asset_pair_name.replace(/-/, '');
-    e.price = e.close;      
+    e.price = e.close;
     e.bid = parseFloat(e.bid?.price);
     e.ask = parseFloat(e.ask?.price);
     e.url = `https://big.one/es/trade/${e.asset_pair_name}`
     e.volume = e.volume;
   })
-  const filteredData = hasFailedSymbols(failBigone, bigoneDataArr);
   if (status === 200) {
-    return res.json(filteredData).status(200);
+    return bigoneDataArr;
   } else {
     return res.json(bigoneDataArr.statusText).status(status);
   }
 }
 
-const getHome = ()=> {return '<h1>Es la Home</h1>'} 
-
-module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataKraken, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataDigifinex, getDataTidex, getDataBigone, getHome }
+module.exports = { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataKraken, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataDigifinex, getDataTidex, getDataBigone }

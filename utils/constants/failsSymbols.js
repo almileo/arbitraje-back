@@ -36,5 +36,7 @@ const failTidex=[];
 
 const failBigone=[];
 
+const failKraken=[];
 
-module.exports = { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failLbank, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone}
+
+module.exports = { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failLbank, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone, failKraken}
