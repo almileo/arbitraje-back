@@ -4,12 +4,19 @@ const { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCrypto
 //const getAllData= require('../controllers/getArbitrage.controller');
 const cors = require('cors');
 const { getAllData } = require('../controllers/getArbitrage.controller');
+const { initializeTelegramBot, sendMessageAlert } = require('../controllers/telegram.controller');
+const TelegramBot = require('node-telegram-bot-api');
 
+
+initializeTelegramBot();
 
 router.get('/data/:min/:max',cors(), getAllData);
 router.get("/",(req, res)=>{
     res.send('Esto es el Backend de la Crypto!');   
   });
+
+router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
+
 
 
 //router.get('/arbitraje', cors(), getArbitrageTableData)
