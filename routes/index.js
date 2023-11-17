@@ -6,6 +6,7 @@ const { initializeTelegramBot, sendMessageAlert, sendRandomExchange} = require('
 
 
 initializeTelegramBot();
+sendMessageAlert();
 const randomMessage = setInterval(sendRandomExchange,process.env.MESSAGE_TIME)
 
 
