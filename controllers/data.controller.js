@@ -1,7 +1,7 @@
 const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
 const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone, failLbank, failKraken } = require('../utils/constants/failsSymbols');
-const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
+
 
 
 const getDataBinance = async (req, res, next) => {
