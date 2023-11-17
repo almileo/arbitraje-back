@@ -6,7 +6,8 @@ const { initializeTelegramBot, sendMessageAlert, sendRandomExchange} = require('
 
 
 initializeTelegramBot();
-sendRandomExchange();
+const randomMessage = setInterval(sendRandomExchange,30000)
+
 
 router.get('/data/:min?/:max?',cors(), getAllData);
 router.get("/",(req, res)=>{

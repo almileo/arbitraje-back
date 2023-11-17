@@ -1,11 +1,7 @@
 const axios = require('axios');
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const app = express();
 const TelegramBot = require('node-telegram-bot-api');
 const dotenv = require('dotenv');
-const { getAllData } = require('./getArbitrage.controller');
+const colors = require('colors');
 
 
 dotenv.config();
@@ -13,27 +9,44 @@ const TELEGRAM_API = process.env.TELEGRAM_API;
 const telegramBot = new TelegramBot(TELEGRAM_API, { polling: true });
 
 const initializeTelegramBot = () => {
-  try{
+  try {
 
-  telegramBot.on("polling_error", (msg) => console.log('Error Telegram: ', msg));
-
-  telegramBot.addListener("message", (msg) => {
-    if(msg.text === 'help'){
-      telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO,'Utilice la pagina ');
-    }
-    if (msg.text === 'bot') {
-      telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, `aca se retransmitiria el msg anterior`);
-    }
-    if(msg.text === 'trading'){
-      telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO,'Las mejores trading del dia son: ');
-    }
-  });
-  console.log('Bot de Telegram inicializado correctamente.');
-}catch(error){
-  console.log('Error al inicializa el bot de telegram', error.message);
+    telegramBot.on("polling_error", (msg) => console.log('Error Telegram: ', msg));
+    telegramBot.onText(/^\/setcommand/, (msg) => {
+      
+      const opts = [
+        { command: 'help', description: 'See all the commands we have for you' },
+        { command: 'trading', description: 'See 5 random option for exchange' },
+        { command: 'bot', description: 'See bot' }
+      ];
+      
+      telegramBot.setMyCommands(opts).then(function (info) {
+        console.log(info)
+      });;
+    });
+    telegramBot.onText(/^\/commands/, (msg) => {
+      bot.getMyCommands().then(function (info) {
+        console.log(info)
+      });
+    });
+    
+    telegramBot.addListener("message", (msg) => {
+      if (msg.text === '/help') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'Utilice la pagina ');
+      }
+      if (msg.text === '/bot') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, `aca se retransmitiria el msg anterior`);
+      }
+      if (msg.text === '/trading') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+      }
+    });
+    console.log('Bot de Telegram inicializado correctamente.');
+  } catch (error) {
+    console.log('Error al inicializa el bot de telegram', error.message);
+  }
 }
-}
-const sendMessageAlert= (req, res)=>{
+const sendMessageAlert = (req, res) => {
   try {
     telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, req.body.msg);
     res.status(200).send('Ya mande el mensaje').end();
@@ -43,26 +56,38 @@ const sendMessageAlert= (req, res)=>{
   }
 }
 
-function randomnExchange (obj, num) {
+function randomnExchange(obj, num) {
   const keys = Object.keys(obj);
   const shuffledKeys = keys.slice().sort(() => 0.5 - Math.random());
-
-  const result = {};
+  const result = [];
   shuffledKeys.slice(0, num).forEach(key => {
     result[key] = obj[key];
   });
-  console.log('Result', keys);
   return result;
 }
 
-async function  sendRandomExchange (){
-  let msgTest=[];
-  const minProfit = process.env.MIN_PROFIT
-  const maxProfit = process.env.MAX_PROFIT
-  const bodyFree = {msg:''};
+async function sendRandomExchange() {
+  let bodyFree = "";
   const response = await axios.get('http://localhost:3000/data');
   const data = response.data;
-  console.log('data', data);
+  const randomData = randomnExchange(data, 5)
+  randomData.forEach(e => {
+    let bid = Object.values(e.bid);
+    let ask = Object.values(e.ask);
+    let maxBid = Math.max(...bid);
+    let minAsk = Math.min.apply(null, ask.filter(e => e != null));
+    let maxBidExchange = Object.keys(e.bid).filter(key => e.bid[key] == maxBid)[0].toUpperCase();
+    let minAskExchange = Object.keys(e.ask).filter(key => e.ask[key] == minAsk)[0].toUpperCase();
+    let strMinAsk = minAskExchange.includes('DOT') ? minAskExchange.replace('DOT', '.') : minAskExchange;
+    let strMaxBid = maxBidExchange.includes('DOT') ? maxBidExchange.replace('DOT', '.') : maxBidExchange;
+    e.maxExchange = strMaxBid;
+    e.minExchange = strMinAsk;
+    e.minAsk = parseFloat(minAsk).toFixed(10);
+    e.maxBid = parseFloat(maxBid).toFixed(10);
+    bodyFree = `\n*----------------------*\n*${e.symbol}* \nCompra en ${e.minExchange} a ${e.minAsk} \nVende en ${e.maxExchange} a ${e.maxBid} \nProfit ${e.profit}%\n*----------------------*\n\n`
+    telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, bodyFree, { parse_mode: "Markdown" })
+    return e;
+  })
 
 
 }
