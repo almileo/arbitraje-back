@@ -3,8 +3,10 @@ const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuo
 const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
 
 const getAllData = async (req, res, next) => {
-  const minProfit= req.params.min
-  const maxProfit= req.params.max
+  const minProfit= req?.params.min || process.env.MIN_PROFIT;
+  const maxProfit= req?.params.max || process.env.MAX_PROFIT
+  console.log('min', minProfit);
+  console.log('max', maxProfit);
   let data = []
   const exchangeData = await Promise.all([getDataBinance(), getDataKucoin(), getDataBybit(), getDataHuobi(), getDataCryptoDotCom(), getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone()]);
   const binanceArr = exchangeData[0];
