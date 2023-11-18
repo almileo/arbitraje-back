@@ -6,7 +6,7 @@ const { initializeTelegramBot, sendMessageAlert, sendRandomExchange} = require('
 
 
 initializeTelegramBot();
-sendMessageAlert();
+sendRandomExchange();
 const randomMessage = setInterval(sendRandomExchange,process.env.MESSAGE_TIME)
 
 
@@ -15,7 +15,7 @@ router.get("/",(req, res)=>{
     res.send('Esto es el Backend de la Crypto!');   
   });
 
-router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
+//router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
 
 
 

@@ -32,13 +32,17 @@ const initializeTelegramBot = () => {
     
     telegramBot.addListener("message", (msg) => {
       if (msg.text === '/help') {
-        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'Utilice la pagina ');
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'Utilice la pagina 22')
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
       if (msg.text === '/bot') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, `aca se retransmitiria el msg anterior`);
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
       if (msg.text === '/trading') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
+        
       }
     });
     console.log('Bot de Telegram inicializado correctamente.');
@@ -68,7 +72,7 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('https://arbitragecrypto-vz0y.onrender.com/data');
+  const response = await axios.get('http://localhost:3000/data');
   const data = response.data;
   const randomData = randomnExchange(data, 5)
   randomData.forEach(e => {
