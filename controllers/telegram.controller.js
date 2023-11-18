@@ -68,7 +68,7 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('https://arbitragecrypto-vz0y.onrender.com/data');
+  const response = await axios.get('https://arbitragecrypto-vz0y.onrender.com/data').catch((error) => console.error('Error: ', error));
   const data = response.data;
   const randomData = randomnExchange(data, 5)
   randomData.forEach(e => {
