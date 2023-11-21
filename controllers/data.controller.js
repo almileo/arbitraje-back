@@ -74,7 +74,6 @@ const getDataBybit = async (req, res, next) => {
     e.bid = parseFloat(e.bid_price);
     e.ask = parseFloat(e.ask_price);
   })
-
   if (data.data.ret_code === 0) {
     return bybitDataArr;
   } else {

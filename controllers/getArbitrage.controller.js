@@ -6,7 +6,7 @@ const getAllData = async (req, res, next) => {
   const minProfit= req?.params.min || process.env.MIN_PROFIT;
   const maxProfit= req?.params.max || process.env.MAX_PROFIT
   let data = []
-  const exchangeData = await Promise.all([getDataBinance(), getDataKucoin(), getDataBybit(), getDataHuobi(), getDataCryptoDotCom(), getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone()]);
+  const exchangeData = await Promise.all([getDataBinance(), getDataKucoin(), getDataBybit(), getDataHuobi(), getDataCryptoDotCom(), getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone()]).catch(error => console.log('Error', error));
   const binanceArr = exchangeData[0];
   const binanceObj = hasFailedSymbols(failsSymbolsBinance, exchangeData[0]);
   const kucoinObj = hasFailedSymbols(failKucoin, exchangeData[1]);

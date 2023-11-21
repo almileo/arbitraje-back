@@ -54,6 +54,7 @@ const sendMessageAlert = (req, res) => {
   try {
     telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, req.body.msg);
     res.status(200).send('Ya mande el mensaje').end();
+    console.log('Envie un mensaje pedido desde algun front');
   } catch (error) {
     console.log('Error al enviar el mensaje', error.message);
     res.status(400).send('Error al enviar el mensaje', error.message).end();
@@ -72,7 +73,7 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('http://localhost:3000/data');
+  const response = await axios.get('https://back-coinstartbot.onrender.com/data');
   const data = response.data;
   const randomData = randomnExchange(data, 5)
   randomData.forEach(e => {
@@ -89,10 +90,10 @@ async function sendRandomExchange() {
     e.minAsk = parseFloat(minAsk).toFixed(10);
     e.maxBid = parseFloat(maxBid).toFixed(10);
     bodyFree = `\n*----------------------*\n*${e.symbol}* \nCompra en ${e.minExchange} a ${e.minAsk} \nVende en ${e.maxExchange} a ${e.maxBid} \nProfit ${e.profit}%\n*----------------------*\n\n`
-    telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, bodyFree, { parse_mode: "Markdown" })
+    telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, bodyFree, { parse_mode: "Markdown" });
     return e;
-  })
-
+  });
+  console.log(`Envie los mensajes al grupo ${process.env.TELEGRAM_CHAT_ID_GRUPO}`);
 
 }
 
