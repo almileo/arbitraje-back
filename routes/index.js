@@ -9,7 +9,7 @@ const { timerRandomMessage } = require('../controllers/time.controller');
 
 initializeTelegramBot();
 timerRandomMessage();
-//sendRandomExchange();
+sendRandomExchange();
 //const randomMessage = setInterval(sendRandomExchange,process.env.MESSAGE_TIME);
 
 
