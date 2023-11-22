@@ -34,35 +34,35 @@ const initializeTelegramBot = () => {
     });
     
     telegramBot.addListener("message", (msg) => {
-      if (msg.text === '/help@TestMauroBot') {
+      if (msg.text === '/help') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'Utilice la pagina 22')
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
-      if (msg.text === '/bot@TestMauroBot') {
+      if (msg.text === '/bot') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, `aca se retransmitiria el msg anterior`);
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
-      if (msg.text === '/trading@TestMauroBot') {
+      if (msg.text === '/trading') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
       }
-      if (msg.text === '/hour@TestMauroBot') {
+      if (msg.text === '/hour') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
       }
-      if (msg.text === '/notes@TestMauroBot') {
+      if (msg.text === '/notes') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
       }
-      if (msg.text === '/days@TestMauroBot') {
+      if (msg.text === '/days') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
       }
-      if (msg.text === '/minutes@TestMauroBot') {
+      if (msg.text === '/minutes') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
