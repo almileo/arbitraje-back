@@ -10,14 +10,17 @@ const telegramBot = new TelegramBot(TELEGRAM_API, { polling: true });
 
 const initializeTelegramBot = () => {
   try {
-
     telegramBot.on("polling_error", (msg) => console.log('Error Telegram: ', msg));
     telegramBot.onText(/^\/setcommand/, (msg) => {
       
       const opts = [
         { command: 'help', description: 'See all the commands we have for you' },
         { command: 'trading', description: 'See 5 random option for exchange' },
-        { command: 'bot', description: 'See bot' }
+        { command: 'bot', description: 'See bot' },
+        { command: 'notes', description: 'Take notes' },
+        { command: 'day', description: 'See bot' },
+        { command: 'hour', description: 'See bot' },
+        { command: 'minutes', description: 'See bot' }
       ];
       
       telegramBot.setMyCommands(opts).then(function (info) {
@@ -31,19 +34,43 @@ const initializeTelegramBot = () => {
     });
     
     telegramBot.addListener("message", (msg) => {
-      if (msg.text === '/help') {
+      if (msg.text === '/help@TestMauroBot') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'Utilice la pagina 22')
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
-      if (msg.text === '/bot') {
+      if (msg.text === '/bot@TestMauroBot') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, `aca se retransmitiria el msg anterior`);
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
       }
-      if (msg.text === '/trading') {
+      if (msg.text === '/trading@TestMauroBot') {
         telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
         console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
         
       }
+      if (msg.text === '/hour@TestMauroBot') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
+        
+      }
+      if (msg.text === '/notes@TestMauroBot') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
+        
+      }
+      if (msg.text === '/days@TestMauroBot') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
+        
+      }
+      if (msg.text === '/minutes@TestMauroBot') {
+        telegramBot.sendMessage(process.env.TELEGRAM_CHAT_ID_GRUPO, 'The random exchanges are :');
+        console.log('msg', `El usuario ${msg.from.first_name} uso el comando ${msg.text}`);
+        
+      }
+
+
+
+
     });
     console.log('Bot de Telegram inicializado correctamente.');
   } catch (error) {
@@ -73,7 +100,7 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('https://arbitragecrypto-vz0y.onrender.com/data');
+  const response = await axios.get('http://localhost:3000/data');
   const data = response.data;
   const randomData = randomnExchange(data, 5)
   randomData.forEach(e => {
