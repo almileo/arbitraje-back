@@ -73,7 +73,7 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('https://back-coinstartbot.onrender.com/data');
+  const response = await axios.get('http://localhost:3000/data');
   const data = response.data;
   const randomData = randomnExchange(data, 5)
   randomData.forEach(e => {
