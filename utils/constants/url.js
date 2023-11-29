@@ -80,7 +80,7 @@ const ConstantURL = {
   },
   bitget: {
     url: 'https://api.bitget.com/api/spot/v1/market/tickers',
-    url_networks: 'https://api.bitget.com/api/spot/v1/public/currencies'
+    url_networks: 'https://api.bitget.com/api/v2/spot/public/coins'
   },
   bkex: {
     url: 'https://api.bkex.com/v2/q/ticker/price',

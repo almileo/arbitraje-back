@@ -26,8 +26,18 @@ const getAllData = async (req, res, next) => {
   const tidexObj = hasFailedSymbols(failTidex, exchangeData[15]);
   const bigoneObj = hasFailedSymbols(failBigone, exchangeData[16]);
 
+  
   binanceArr.forEach(elem => {
     const s = elem.symbol
+    const n = {
+      binance: {
+        chain:[{
+          networkName:'',
+          depositEnable:true,
+          withdrawEnable:true,
+        }]
+      }
+    }
     const p = {
       binance: binanceObj[s].price,
       bigone: bigoneObj[s]?.price ? bigoneObj[s]?.price : null,
