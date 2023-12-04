@@ -91,7 +91,7 @@ const ConstantURL = {
     url_networks: ''
   },
   bingx: {
-    url: 'https://api-swap-rest.bingbon.pro/api/v1/market/getTicker',
+    url: 'https://api-swap-rest.bingx.com/api/v1/market/getTicker',
     url_networks: ''
   },
   bitstamp: {
