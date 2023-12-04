@@ -12,7 +12,7 @@ const ConstantURL = {
   },
   bybit: {
     url: 'https://api.bybit.com/v2/public/tickers',
-    url_networks: 'https://api.bybit.com/asset/v1/public/deposit/allowed-deposit-list'
+    url_networks: 'https://api.bybit.com/v5/asset/coin/query-info'
   },
   cex: {
     url: 'https://cex.io/api/currency_profile',
@@ -32,7 +32,7 @@ const ConstantURL = {
   },
   houbi: {
     url: 'https://api.huobi.pro/market/tickers',
-    url_networks: 'https://api.huobi.pro/v1/settings/common/currencys'
+    url_networks: 'https://api.huobi.pro/v1/settings/common/chains'
   },
   hitbtc: {
     url: 'https://api.hitbtc.com/api/2/public/ticker',
@@ -68,7 +68,7 @@ const ConstantURL = {
   },
   cryptoDotCom: {
     url: 'https://api.crypto.com/v2/public/get-ticker',
-    url_networks: ''
+    url_networks: 'https://api.crypto.com/v2/private/get-currency-networks'
   },
   gemini: {
     url: 'https://api.gemini.com/v1/pricefeed',

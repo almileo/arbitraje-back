@@ -6,7 +6,7 @@ const moment = require('moment-timezone');
 const { getAllData } = require('../controllers/getArbitrage.controller');
 const { initializeTelegramBot, sendMessageAlert, sendRandomExchange} = require('../controllers/telegram.controller');
 const { timerRandomMessage } = require('../controllers/time.controller');
-const { getNetworkBitget, getNetworkKucoin, getNetworkBybit } = require('../controllers/network.controller');
+const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, getNetworkCryptoDotCom, getNetworkGateIo, getNetworkMexc } = require('../controllers/network.controller');
 
 //initializeTelegramBot();
 //timerRandomMessage();
@@ -16,7 +16,7 @@ const { getNetworkBitget, getNetworkKucoin, getNetworkBybit } = require('../cont
 
 
 router.get('/data/:min?/:max?',cors(), getAllData);
-router.get("/",cors(), getNetworkBybit);
+router.get("/",cors(), getNetworkMexc);
 
 //router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
 
