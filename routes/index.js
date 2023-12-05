@@ -16,7 +16,7 @@ const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, ge
 
 
 router.get('/data/:min?/:max?',cors(), getAllData);
-router.get("/",cors(), getNetworkMexc);
+router.get("/",cors(), getNetworkBitget);
 
 //router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
 

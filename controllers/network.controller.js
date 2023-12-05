@@ -18,15 +18,21 @@ const { networkInterfaces } = require('os');
 
 //OK
 const getNetworkKucoin = async (req, res, next) => {
-  const { data } = await axios.get(ConstantURL.kucoin.url_networks)
-  let kucoinDataArr = data.data;
-  kucoinDataArr.forEach(e => {
-    e.symbol = e.currency;
-    e.networkName = e.fullName;
-    depositEnable = e.isDepositEnabled
-    whithdrawEnable = e.isWithdrawEnabled
-  })
-  return kucoinDataArr;
+  try {
+
+    const { data } = await axios.get(ConstantURL.kucoin.url_networks)
+    let kucoinDataArr = data.data;
+    kucoinDataArr.forEach(e => {
+      e.symbol = e.currency;
+      e.networkName = e.fullName;
+      depositEnable = e.isDepositEnabled
+      whithdrawEnable = e.isWithdrawEnabled
+    })
+    return kucoinDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de Kucoin', error);
+    return kucoinDataArr = [];
+  }
 }
 
 function getSignature(param, secret, timestamp, apiKey, recvWindow) {
@@ -35,150 +41,179 @@ function getSignature(param, secret, timestamp, apiKey, recvWindow) {
 
 //depositEnable and whithdrawEnable: The chain status of deposit. 0: suspend. 1: normal OK
 const getNetworkBybit = async (req, res, next) => {
-  const timestamp = new Date().getTime().toString();
-  const apiKey = process.env.BYBIT_API_KEY;
-  const recvWindow = '20000';
-  const param = '';
-  const secret = process.env.BYBIT_API_SECRET
-  const sign = getSignature(param, secret, timestamp, apiKey, recvWindow)
-  const data = await axios.get(ConstantURL.bybit.url_networks, {
-    headers: {
-      'X-BAPI-API-KEY': process.env.BYBIT_API_KEY,
-      'X-BAPI-TIMESTAMP': timestamp,
-      'X-BAPI-RECV-WINDOW': recvWindow,
-      'X-BAPI-SIGN': sign
-    }
-  })
-  bybitDataArr = (data.data.result.rows);
-  bybitDataArr.forEach(e => {
-    e.symbol = e.coin
-    e.networks = e.chains.map((c) => {
-      networkName = c.chainType
-      depositEnable = c.chainDeposit == '1' ? true : false
-      withdrawEnable = c.chainWithdraw == '1' ? true : false
-      return { networkName, depositEnable, withdrawEnable }
+  try {
+
+    const timestamp = new Date().getTime().toString();
+    const apiKey = process.env.BYBIT_API_KEY;
+    const recvWindow = '20000';
+    const param = '';
+    const secret = process.env.BYBIT_API_SECRET
+    const sign = getSignature(param, secret, timestamp, apiKey, recvWindow)
+    const data = await axios.get(ConstantURL.bybit.url_networks, {
+      headers: {
+        'X-BAPI-API-KEY': process.env.BYBIT_API_KEY,
+        'X-BAPI-TIMESTAMP': timestamp,
+        'X-BAPI-RECV-WINDOW': recvWindow,
+        'X-BAPI-SIGN': sign
+      }
+    })
+    bybitDataArr = (data.data.result.rows);
+    bybitDataArr.forEach(e => {
+      e.symbol = e.coin
+      e.networks = e.chains.map((c) => {
+        networkName = c.chainType
+        depositEnable = c.chainDeposit == '1' ? true : false
+        withdrawEnable = c.chainWithdraw == '1' ? true : false
+        return { networkName, depositEnable, withdrawEnable }
+      })
+
     })
 
-  })
-
-  return bybitDataArr;
+    return bybitDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de Bybit', error);
+    return bybitDataArr = [];
+  }
 }
 
 // ok
 const getNetworkHuobi = async (req, res, next) => {
-  const dataHuobi = await axios.get(ConstantURL.houbi.url_networks);
-  const huobiDataArr = dataHuobi.data.data;
-  const status = dataHuobi.data.status;
-  huobiDataArr.forEach(e => {
-    e.symbol = e.currency.toUpperCase();
-    e.networkName = e.dn
-    e.depositEnable = e.de
-    e.withdrawable = e.we
-  })
-  console.log('Datos', huobiDataArr);
-  return huobiDataArr;
+  try {
+    const dataHuobi = await axios.get(ConstantURL.houbi.url_networks);
+    const huobiDataArr = dataHuobi.data.data;
+    const status = dataHuobi.data.status;
+    huobiDataArr.forEach(e => {
+      e.symbol = e.currency.toUpperCase();
+      e.networkName = e.dn
+      e.depositEnable = e.de
+      e.withdrawable = e.we
+    })
+    console.log('Datos', huobiDataArr);
+    return huobiDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de Huobi', error);
+    return huobiDataArr = [];
+  }
 }
 //!No se como acceder a la url de network pero lo encontre
 const getNetworkCryptoDotCom = async (req, res, next) => {
-  const timestamp = new Date().getTime();
-  const apiKey = process.env.CRYPTODOT_API_KEY;
-  const secret = process.env.CRYPTODOT_API_SECRET
-  const param = {};
+  try {
+    const timestamp = new Date().getTime();
+    const apiKey = process.env.CRYPTODOT_API_KEY;
+    const secret = process.env.CRYPTODOT_API_SECRET
+    const param = {};
 
-  const sign = getSignature(param, secret, timestamp, apiKey)
-  const dataCryptoDotCom = await axios.get(ConstantURL.cryptoDotCom.url_networks, {
-    headers: {
-      "id": 12,
-      "method": "private/get-currency-networks",
-      "params": param,
-      "api_key": apiKey,
-      "sig": sign,
-      "nonce": timestamp
-    }})
-  const cryptoDotComDataArr = dataCryptoDotCom.data.result.data;
-  const status = parseInt(dataCryptoDotCom.data.code);
-  /* cryptoDotComDataArr.forEach(e => {
-     e.url = `https://crypto.com/exchange/trade/spot/${e.i}`;
-     e.symbol = e.i.replace(/_/, '');
-     e.price = e.a;
-     let isComprobated = comprobatedSymbols.includes(e.symbol);
-     e.isComprobated = isComprobated;
-     e.volume = e.vv;
-     e.bid = parseFloat(e.b);
-     e.ask = parseFloat(e.k);
-   })
-   if (status === 0) {
-     return cryptoDotComDataArr;
-   } else {
-     return res.json(status).status(status);
-   }*/
+    const sign = getSignature(param, secret, timestamp, apiKey)
+    const dataCryptoDotCom = await axios.get(ConstantURL.cryptoDotCom.url_networks, {
+      headers: {
+        "id": 12,
+        "method": "private/get-currency-networks",
+        "params": param,
+        "api_key": apiKey,
+        "sig": sign,
+        "nonce": timestamp
+      }
+    })
+    const cryptoDotComDataArr = dataCryptoDotCom.data.result.data;
+    const status = parseInt(dataCryptoDotCom.data.code);
+    /* cryptoDotComDataArr.forEach(e => {
+       e.url = `https://crypto.com/exchange/trade/spot/${e.i}`;
+       e.symbol = e.i.replace(/_/, '');
+       e.price = e.a;
+       let isComprobated = comprobatedSymbols.includes(e.symbol);
+       e.isComprobated = isComprobated;
+       e.volume = e.vv;
+       e.bid = parseFloat(e.b);
+       e.ask = parseFloat(e.k);
+      })
+      if (status === 0) {
+        return cryptoDotComDataArr;
+      } else {
+        return res.json(status).status(status);
+      }*/
+  } catch (error) {
+    console.error('Error de APINetwork de Crypto.com', error);
+    return cryptoDotComDataArr = [];
+  }
 }
 
 //OK
 const getNetworkGateIo = async (req, res, next) => {
-  const { data} = await axios.get(ConstantURL.gate_io.url_networks)
-  const gateIoDataArr = data
-  gateIoDataArr.forEach(e => {
-    e.symbol = e.currency.split('_')[0];
-    e.depositEnable = !e.deposit_disabled
-    e.withdrawEnable = !e.withdraw_disabled
-    e.networkName = e.chain
-    })
-  return gateIoDataArr;
-}
+  try {
 
+    const { data } = await axios.get(ConstantURL.gate_io.url_networks)
+    const gateIoDataArr = data
+    gateIoDataArr.forEach(e => {
+      e.symbol = e.currency.split('_')[0];
+      e.depositEnable = !e.deposit_disabled
+      e.withdrawEnable = !e.withdraw_disabled
+      e.networkName = e.chain
+    })
+    return gateIoDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de GateIo', error);
+    return gateIoDataArr = [];
+  }
+}
+//ok
 const getNetworkMexc = async (req, res, next) => {
-  const dataMexc = await axios.get(ConstantURL.mexc.url_networks);
-  const mexcDataArr = dataMexc.data.data;
-  const regex = /\(([^)]+)\)/;
-  mexcDataArr.forEach(e => {
-    e.symbol = e.currency;
-    e.networkName= e.coins.map((c=>{
-      chain = c.chain
-      const startIndex = chain.indexOf('(') + 1;
-      const endIndex = chain.indexOf(')');
-      networkName = startIndex > 0 && endIndex > 0 ? chain.slice(startIndex, endIndex) : chain;
-      depositEnable = c.is_deposit_enabled
-      withdrawEnable = c.is_withdraw_enabled
-      return {networkName, depositEnable,withdrawEnable}
-    }))
-    console.log('e.networkName', e.networkName);
-
-  })
-
-    return mexcDataArr;
-}
-
-const getNetworkLbank = async (req, res, next) => {
-  const dataLbank = await axios.get(ConstantURL.lbank.url);
-  const lbankDataArr = dataLbank.data;
-
-  lbankDataArr.forEach(e => {
-  
-  })
-  
-    return lbankDataArr
- 
-}
-
-const getNetworkBitget = async (req, res, next) => {
-  const dataBitget = await axios.get(ConstantURL.bitget.url_networks);
-  const bitgetDataArr = dataBitget.data.data;
-  const status = dataBitget.data.code;
-  console.log('Datos', bitgetDataArr);
-  bitgetDataArr.forEach(e => {
-    e.symbol = e.coin
-    e.networks = e.chains.map((c) => {
-      networkName = c.chain
-      depositEnable = c.rechargeable
-      withdrawEnable = c.withdrawable
-      return { networkName, depositEnable, withdrawEnable }
+  try {
+    const dataMexc = await axios.get(ConstantURL.mexc.url_networks);
+    const mexcDataArr = dataMexc.data.data;
+    const regex = /\(([^)]+)\)/;
+    mexcDataArr.forEach(e => {
+      e.symbol = e.currency;
+      e.networkName = e.coins.map((c => {
+        chain = c.chain
+        const startIndex = chain.indexOf('(') + 1;
+        const endIndex = chain.indexOf(')');
+        networkName = startIndex > 0 && endIndex > 0 ? chain.slice(startIndex, endIndex) : chain;
+        depositEnable = c.is_deposit_enabled
+        withdrawEnable = c.is_withdraw_enabled
+        return { networkName, depositEnable, withdrawEnable }
+      }))
+      console.log('e.networkName', e.networkName);
     })
-  })
-  if (status === "00000") {
+    return mexcDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de Mexc', error);
+    return mexcDataArr = [];
+  }
+}
+//AYUDA https://www.lbank.com/en-US/docs/index.html#trade-record
+const getNetworkLbank = async (req, res, next) => {
+  try {
+    const dataLbank = await axios.get(ConstantURL.lbank.url);
+    const lbankDataArr = dataLbank.data;
+    lbankDataArr.forEach(e => {
+
+    })
+    return lbankDataArr
+  } catch (error) {
+    console.error('Error de APINetwork de LBank', error);
+    return lbankDataArr = [];
+  }
+}
+// no puedo conseguir el boolean de deposti https://www.bitget.com/api-doc/spot/market/Get-Coin-List
+const getNetworkBitget = async (req, res, next) => {
+  try {
+    const dataBitget = await axios.get(ConstantURL.bitget.url_networks);
+    const bitgetDataArr = dataBitget.data.data;
+    console.log('Datos', bitgetDataArr);
+    bitgetDataArr.forEach(e => {
+      e.symbol = e.coin
+      e.networks = e.chains.map((c) => {
+        networkName = c.chain
+        depositEnable = c.rechargeable
+        withdrawEnable = c.withdrawable
+        return { networkName, depositEnable, withdrawEnable }
+      })
+    })
     return bitgetDataArr;
-  } else {
-    return res.json(dataBitget.data.msg).status(status);
+
+  } catch (error) {
+    console.error('Error de APINetwork de LBank', error);
+    return lbankDataArr = [];
   }
 }
 
