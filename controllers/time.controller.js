@@ -10,11 +10,11 @@ const timerRandomMessage = () => {
   const endTime = moment('23:00', 'HH:mm');
 
 
-  cron.schedule('*/10 * * * *', () => {
+  cron.schedule('*/15 * * * *', () => {
     const currentTime = moment();
-    if (currentTime.isBetween(startTime, endTime)) {
+    // if (currentTime.isBetween(startTime, endTime)) {
       sendRandomExchange();
-    }
+    // }
   });
 }
 
