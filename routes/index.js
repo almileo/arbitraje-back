@@ -7,8 +7,6 @@ const { timerRandomMessage } = require('../controllers/time.controller');
 const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, getNetworkCryptoDotCom, getNetworkGateIo, getNetworkMexc, getNetworkOkx, getNetworkDigifinex, getNetworkBinance } = require('../controllers/network.controller');
 
 
-
-require('dotenv').config();
 initializeTelegramBot();
 timerRandomMessage();
 sendRandomExchange();

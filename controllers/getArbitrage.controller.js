@@ -1,12 +1,20 @@
 const { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataKraken, getDataDigifinex, getDataTidex, getDataBigone } = require('../controllers/data.controller')
 const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone, failLbank, failKraken } = require('../utils/constants/failsSymbols');
 const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
+const { getNetworkBinance, getNetworkHuobi } = require('./network.controller');
+const { normalicedNetworkData } = require('../helpers/normalicedNetworkData');
 
 const getAllData = async (req, res, next) => {
   const minProfit= req?.params.min || process.env.MIN_PROFIT;
   const maxProfit= req?.params.max || process.env.MAX_PROFIT
   let data = []
-  const exchangeData = await Promise.all([getDataBinance(), getDataKucoin(), getDataBybit(), getDataHuobi(), getDataCryptoDotCom(), getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone()]).catch(error => console.log('Error', error));
+  const exchangeData = await Promise.all([
+    getDataBinance(), 
+    getDataKucoin(),
+    getDataBybit(), 
+    getDataHuobi(), 
+    getDataCryptoDotCom(), 
+    getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone(), getNetworkBinance(), getNetworkHuobi() ]).catch(error => console.log('Error', error));
   const binanceArr = exchangeData[0];
   const binanceObj = hasFailedSymbols(failsSymbolsBinance, exchangeData[0]);
   const kucoinObj = hasFailedSymbols(failKucoin, exchangeData[1]);
@@ -25,19 +33,17 @@ const getAllData = async (req, res, next) => {
   const digifinexObj = hasFailedSymbols(failDigifinex, exchangeData[14]);
   const tidexObj = hasFailedSymbols(failTidex, exchangeData[15]);
   const bigoneObj = hasFailedSymbols(failBigone, exchangeData[16]);
-
+  const binanceNetArr = exchangeData[17];
+  const huobiNetArr = normalicedNetworkData(exchangeData[18])
+  
+  console.log('HuboiNetArr', huobiNetArr);
   
   binanceArr.forEach(elem => {
     const s = elem.symbol
     const n = {
-      binance: {
-        chain:[{
-          networkName:'',
-          depositEnable:true,
-          withdrawEnable:true,
-        }]
+      binance: binanceNetArr[s].networks
       }
-    }
+    
     const p = {
       binance: binanceObj[s].price,
       bigone: bigoneObj[s]?.price ? bigoneObj[s]?.price : null,

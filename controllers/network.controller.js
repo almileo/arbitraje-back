@@ -50,8 +50,6 @@ const getNetworkBinance = async (req, res, next) => {
         return {networkName, depositEnable, whithdrawEnable}
       })
     })
-    console.log('Datos', binanceDataArr[7].networks);
-    res.json(binanceDataArr).status(200);
     return binanceDataArr;
   } catch (error) {
     console.error('Error de APINetwork de Binance', error);
