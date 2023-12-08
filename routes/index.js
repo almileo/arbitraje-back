@@ -9,13 +9,10 @@ const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, ge
 
 
 require('dotenv').config();
-//initializeTelegramBot();
-//timerRandomMessage();
-//sendRandomExchange();
-//const randomMessage = setInterval(sendRandomExchange,process.env.MESSAGE_TIME);
+initializeTelegramBot();
+timerRandomMessage();
+sendRandomExchange();
 
-const binanceApiKey = process.env.BINANCE_API_KEY
-const binanceSecret = process.env.BINANCE_API_SECRET
 router.get('/data/:min?/:max?', cors(), getAllData);
 router.get("/", cors(), getNetworkBinance);
 
