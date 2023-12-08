@@ -1,7 +1,7 @@
 const ConstantURL = {
   binance: {
     url: 'https://api.binance.com/api/v3/ticker/price',
-    url_networks: '',
+    url_networks: 'https://api.binance.com/sapi/v1/capital/config/getall',
     price_change: 'https://api.binance.com/api/v3/ticker/24hr',
     kline: 'https://api.binance.com/api/v3/klines',
   },
@@ -64,7 +64,7 @@ const ConstantURL = {
   },
   kraken: {
     url: "https://api.kraken.com/0/public/Ticker",
-    url_networks: ''
+    url_networks: 'https://api.kraken.com/0/public/Assets'
   },
   cryptoDotCom: {
     url: 'https://api.crypto.com/v2/public/get-ticker',
@@ -104,10 +104,11 @@ const ConstantURL = {
   },
   digifinex: {
     url: 'https://openapi.digifinex.com/v3/ticker',
-    url_networks: ''
+    url_networks: 'https://openapi.digifinex.com/v3/currencies'
   },
   bigone: {
     url: 'https://big.one/api/v3/asset_pairs/tickers'
+    
   },
   tidex: {
     url: 'https://api.tidex.com/api/v1/public/tickers'

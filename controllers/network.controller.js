@@ -1,8 +1,8 @@
 const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
-const dotenv = require('dotenv');
 const crypto = require('crypto');
-const { networkInterfaces } = require('os');
+const qs = require('qs');
+
 
 
 
@@ -15,6 +15,49 @@ const { networkInterfaces } = require('os');
     }]
   }
 }*/
+const getNetworkBinance = async (req, res, next) => {
+  try {
+    const binanceConfig = {
+      API_KEY: process.env.BINANCE_API_KEY,
+      API_SECRET: process.env.BINANCE_API_SECRET,
+      HOST_URL: 'https://api.binance.com',
+    };
+
+    const data = {
+      recvWindow: 20000,
+      timestamp: Date.now(),
+    };
+
+    const dataQueryString = qs.stringify(data);
+    const signature = crypto.createHmac('sha256', binanceConfig.API_SECRET).update(dataQueryString).digest('hex');
+
+    const headers = {
+      'X-MBX-APIKEY': binanceConfig.API_KEY,
+    };
+
+    const url = `${binanceConfig.HOST_URL}/sapi/v1/capital/config/getall?${dataQueryString}&signature=${signature}`;
+
+    const { data: binanceDataArr } = await axios.get(url, {
+      headers,
+    });
+
+    binanceDataArr.forEach(e=>{
+      e.symbol = e.coin
+      e.networks= e.networkList.map(c=>{
+        networkName = c.network
+        depositEnable=c.depositEnable
+        whithdrawEnable= c.withdrawEnable
+        return {networkName, depositEnable, whithdrawEnable}
+      })
+    })
+    console.log('Datos', binanceDataArr[7].networks);
+    res.json(binanceDataArr).status(200);
+    return binanceDataArr;
+  } catch (error) {
+    console.error('Error de APINetwork de Binance', error);
+    return binanceDataArr = [];
+  }
+};
 
 //OK
 const getNetworkKucoin = async (req, res, next) => {
@@ -39,10 +82,9 @@ function getSignature(param, secret, timestamp, apiKey, recvWindow) {
   return crypto.createHmac('sha256', secret).update(timestamp + apiKey + recvWindow + param).digest('hex');
 }
 
-//depositEnable and whithdrawEnable: The chain status of deposit. 0: suspend. 1: normal OK
+//depositEnable and whithdrawEnable: The chain status of deposit. 0: suspend. 1: normal //?OK
 const getNetworkBybit = async (req, res, next) => {
   try {
-
     const timestamp = new Date().getTime().toString();
     const apiKey = process.env.BYBIT_API_KEY;
     const recvWindow = '20000';
@@ -88,7 +130,7 @@ const getNetworkHuobi = async (req, res, next) => {
       e.depositEnable = e.de
       e.withdrawable = e.we
     })
-    console.log('Datos', huobiDataArr);
+
     return huobiDataArr;
   } catch (error) {
     console.error('Error de APINetwork de Huobi', error);
@@ -172,7 +214,7 @@ const getNetworkMexc = async (req, res, next) => {
         withdrawEnable = c.is_withdraw_enabled
         return { networkName, depositEnable, withdrawEnable }
       }))
-      console.log('e.networkName', e.networkName);
+
     })
     return mexcDataArr;
   } catch (error) {
@@ -180,7 +222,7 @@ const getNetworkMexc = async (req, res, next) => {
     return mexcDataArr = [];
   }
 }
-//AYUDA https://www.lbank.com/en-US/docs/index.html#trade-record
+//!AYUDA https://www.lbank.com/en-US/docs/index.html#trade-record
 const getNetworkLbank = async (req, res, next) => {
   try {
     const dataLbank = await axios.get(ConstantURL.lbank.url);
@@ -194,12 +236,11 @@ const getNetworkLbank = async (req, res, next) => {
     return lbankDataArr = [];
   }
 }
-// no puedo conseguir el boolean de deposti https://www.bitget.com/api-doc/spot/market/Get-Coin-List
+//ok
 const getNetworkBitget = async (req, res, next) => {
   try {
     const dataBitget = await axios.get(ConstantURL.bitget.url_networks);
     const bitgetDataArr = dataBitget.data.data;
-    console.log('Datos', bitgetDataArr);
     bitgetDataArr.forEach(e => {
       e.symbol = e.coin
       e.networks = e.chains.map((c) => {
@@ -208,45 +249,49 @@ const getNetworkBitget = async (req, res, next) => {
         withdrawEnable = c.withdrawable
         return { networkName, depositEnable, withdrawEnable }
       })
+      console.log('Datos', bitgetDataArr[1].networks);
     })
     return bitgetDataArr;
 
   } catch (error) {
-    console.error('Error de APINetwork de LBank', error);
+    console.error('Error de APINetwork de Bitget', error);
     return lbankDataArr = [];
   }
 }
-
+//?Armar funcion
 const getNetworkKraken = async (req, res, next) => {
-  const dataKraken = await axios.get(ConstantURL.kraken.url);
-  const krakenDataArr = Object.entries(dataKraken.data.result);
-  const status = dataKraken.status;
-  krakenDataArr.forEach(e => {
-    e.symbol = e[0];
-    let coin = e.symbol;
-    let base = e.symbol.slice(-4);
-    let url = '';
-    let isComprobated = comprobatedSymbols.includes(e.symbol);
-    e.isComprobated = isComprobated;
-    if (base === 'BUSD' || base === 'USDT' || base === 'USDC') {
-      url = `${coin.slice(0, -4)}${'-'}${base}`
-    } else {
-      base = e.symbol.slice(-3);
-      url = `${coin.slice(0, -3)}${'-'}${base}`
-    }
-    e.price = e[1].c[0];
-    e.url = `https://trade.kraken.com/es-es/charts/KRAKEN:${url}`;
-    e.volume = e[1].v[1];
-    e.bid = parseFloat(e[1].b[0]);
-    e.ask = parseFloat(e[1].a[0]);
-  })
-  if (status === 200) {
+  try {
+    const dataKraken = await axios.get(ConstantURL.kraken.url);
+    const krakenDataArr = Object.entries(dataKraken.data.result);
+    const status = dataKraken.status;
+    krakenDataArr.forEach(e => {
+      e.symbol = e[0];
+      let coin = e.symbol;
+      let base = e.symbol.slice(-4);
+      let url = '';
+      let isComprobated = comprobatedSymbols.includes(e.symbol);
+      e.isComprobated = isComprobated;
+      if (base === 'BUSD' || base === 'USDT' || base === 'USDC') {
+        url = `${coin.slice(0, -4)}${'-'}${base}`
+      } else {
+        base = e.symbol.slice(-3);
+        url = `${coin.slice(0, -3)}${'-'}${base}`
+      }
+      e.price = e[1].c[0];
+      e.url = `https://trade.kraken.com/es-es/charts/KRAKEN:${url}`;
+      e.volume = e[1].v[1];
+      e.bid = parseFloat(e[1].b[0]);
+      e.ask = parseFloat(e[1].a[0]);
+    })
     return krakenDataArr;
-  } else {
-    return res.json(dataKraken.statusText).status(status);
+  } catch (error) {
+    console.error('Error de APINetwork de Bitget', error);
+    return lbankDataArr = [];
   }
-}
 
+
+}
+//
 const getNetworkOkx = async (req, res, next) => {
   const dataOkx = await axios.get(ConstantURL.okx.url);
   const okxDataArr = dataOkx.data.data;
@@ -330,47 +375,41 @@ const getNetworkBitmart = async (req, res, next) => {
     return res.json(dataBitmart.statusText).status(status);
   }
 }
-
+//depositEnable and whithdrawEnable: The chain status of deposit. 0: off suspend. 1: on //?OK
 const getNetworkDigifinex = async (req, res, next) => {
-  const dataDigifinex = await axios.get(ConstantURL.digifinex.url);
-  const digifinexDataArr = dataDigifinex.data.ticker;
-  const status = dataDigifinex.status;
-  digifinexDataArr.forEach(e => {
-    const split = e.symbol.split('_');
-    e.symbol = e.symbol.replace(/_/, '').toUpperCase();
-    e.price = e.last;
-    e.url = `https://www.digifinex.com/es-es/trade/${split[1]}/${split[0]}`;
-    e.volume = e.vol;
-    e.bid = parseFloat(e.buy);
-    e.ask = parseFloat(e.sell);
-  })
-  if (status === 200) {
+  try {
+    const dataDigifinex = await axios.get(ConstantURL.digifinex.url_networks);
+    const digifinexDataArr = dataDigifinex.data.data;
+    digifinexDataArr.forEach(e => {
+      e.symbol = e.currency
+      e.networkName = e.chain
+      e.depositEnable = e.deposit_status == '1' ? true : false
+      e.withdrawEnable = e.withdraw_status == '1' ? true : false
+    })
     return digifinexDataArr;
-  } else {
-    return res.json(statusText).status(status);
+  } catch (error) {
+    console.error('Error de APINetwork de Digifinex', error);
+    return digifinexDataArr = [];
   }
 }
 
 const getNetworkTidex = async (req, res, next) => {
-  const dataTidex = await axios.get(ConstantURL.tidex.url);
-  const status = dataTidex.status
-  const tidexDataArr = Object.entries(dataTidex.data.result);
-  tidexDataArr.forEach(e => {
-    const split = e[0].split('_');
-    e.symbol = e[0].replace(/_/, '');
-    e.price = e[1].ticker.last;
-    e.bid = e[1].ticker.bid;
-    e.ask = e[1].ticker.ask;
-    e.volume = e[1].ticker.vol;
-    e.url = `https://tidex.com/es/exchange/${split[0]}/${split[1]}`;
-  })
-  if (status === 200) {
+  try {
+    const dataTidex = await axios.get(ConstantURL.tidex.url);
+    const tidexDataArr = Object.entries(dataTidex.data.result);
+    tidexDataArr.forEach(e => {
+      const split = e[0].split('_');
+      e.symbol = e[0].replace(/_/, '');
+    })
     return tidexDataArr;
-  } else {
-    return res.json(statusText).status(status);
-  }
-}
 
+  } catch (error) {
+    console.error('Error de APINetwork de Tidex', error);
+    return tidexDataArr = [];
+  }
+
+}
+//No trae info de redes
 const getNetworkBigone = async (req, res, next) => {
   const dataBigone = await axios.get(ConstantURL.bigone.url);
   const status = dataBigone.status;
@@ -391,4 +430,4 @@ const getNetworkBigone = async (req, res, next) => {
 }
 
 
-module.exports = { getNetworkBigone, getNetworkBingx, getNetworkBitget, getNetworkBitmart, getNetworkBitstamp, getNetworkBybit, getNetworkCryptoDotCom, getNetworkDigifinex, getNetworkGateIo, getNetworkHuobi, getNetworkKraken, getNetworkKucoin, getNetworkLbank, getNetworkMexc, getNetworkOkx, getNetworkTidex }
+module.exports = { getNetworkBinance, getNetworkBigone, getNetworkBingx, getNetworkBitget, getNetworkBitmart, getNetworkBitstamp, getNetworkBybit, getNetworkCryptoDotCom, getNetworkDigifinex, getNetworkGateIo, getNetworkHuobi, getNetworkKraken, getNetworkKucoin, getNetworkLbank, getNetworkMexc, getNetworkOkx, getNetworkTidex }
