@@ -1,20 +1,71 @@
-const { getDataBinance, getDataKucoin, getDataBybit, getDataHuobi, getDataCryptoDotCom, getDataGateIo, getDataMexc, getDataLbank, getDataBitget, getDataOkx, getDataBingx, getDataBitstamp, getDataBitmart, getDataKraken, getDataDigifinex, getDataTidex, getDataBigone } = require('../controllers/data.controller')
-const { comprobatedSymbols, failsSymbolsBinance, failKucoin, failBitget, failHuobi, failMexc, failGateio, failDigifinex, failByBit, failCryptoDotCom, failOkx, failBingx, failBitstamp, failBitmart, failTidex, failBigone, failLbank, failKraken } = require('../utils/constants/failsSymbols');
-const { hasFailedSymbols } = require('../helpers/hasFailedSymbols');
-const { getNetworkBinance, getNetworkHuobi } = require('./network.controller');
-const { normalicedNetworkData } = require('../helpers/normalicedNetworkData');
+const {
+  getDataBinance,
+  getDataKucoin,
+  getDataBybit,
+  getDataHuobi,
+  getDataCryptoDotCom,
+  getDataGateIo,
+  getDataMexc,
+  getDataLbank,
+  getDataBitget,
+  getDataOkx,
+  getDataBingx,
+  getDataBitstamp,
+  getDataBitmart,
+  getDataKraken,
+  getDataDigifinex,
+  getDataTidex,
+  getDataBigone,
+} = require("../controllers/data.controller");
+const {
+  comprobatedSymbols,
+  failsSymbolsBinance,
+  failKucoin,
+  failBitget,
+  failHuobi,
+  failMexc,
+  failGateio,
+  failDigifinex,
+  failByBit,
+  failCryptoDotCom,
+  failOkx,
+  failBingx,
+  failBitstamp,
+  failBitmart,
+  failTidex,
+  failBigone,
+  failLbank,
+  failKraken,
+} = require("../utils/constants/failsSymbols");
+const { hasFailedSymbols } = require("../helpers/hasFailedSymbols");
+const { getNetworkBinance, getNetworkHuobi } = require("./network.controller");
+const { normalicedNetworkData } = require("../helpers/normalicedNetworkData");
 
 const getAllData = async (req, res, next) => {
-  const minProfit= req?.params.min || process.env.MIN_PROFIT;
-  const maxProfit= req?.params.max || process.env.MAX_PROFIT
-  let data = []
+  const minProfit = req?.params.min || process.env.MIN_PROFIT;
+  const maxProfit = req?.params.max || process.env.MAX_PROFIT;
+  let data = [];
   const exchangeData = await Promise.all([
-    getDataBinance(), 
+    getDataBinance(),
     getDataKucoin(),
-    getDataBybit(), 
-    getDataHuobi(), 
-    getDataCryptoDotCom(), 
-    getDataGateIo(), getDataMexc(), getDataLbank(), getDataBitget(), getDataKraken(), getDataOkx(), getDataBingx(), getDataBitstamp(), getDataBitmart(), getDataDigifinex(), getDataTidex(), getDataBigone(), getNetworkBinance(), getNetworkHuobi() ]).catch(error => console.log('Error', error));
+    getDataBybit(),
+    getDataHuobi(),
+    getDataCryptoDotCom(),
+    getDataGateIo(),
+    getDataMexc(),
+    getDataLbank(),
+    getDataBitget(),
+    getDataKraken(),
+    getDataOkx(),
+    getDataBingx(),
+    getDataBitstamp(),
+    getDataBitmart(),
+    getDataDigifinex(),
+    getDataTidex(),
+    getDataBigone(),
+    // getNetworkBinance(),
+    // getNetworkHuobi(),
+  ]).catch((error) => console.log("Error", error));
   const binanceArr = exchangeData[0];
   const binanceObj = hasFailedSymbols(failsSymbolsBinance, exchangeData[0]);
   const kucoinObj = hasFailedSymbols(failKucoin, exchangeData[1]);
@@ -33,17 +84,17 @@ const getAllData = async (req, res, next) => {
   const digifinexObj = hasFailedSymbols(failDigifinex, exchangeData[14]);
   const tidexObj = hasFailedSymbols(failTidex, exchangeData[15]);
   const bigoneObj = hasFailedSymbols(failBigone, exchangeData[16]);
-  const binanceNetArr = exchangeData[17];
-  const huobiNetArr = normalicedNetworkData(exchangeData[18])
-  
-  console.log('HuboiNetArr', huobiNetArr);
-  
-  binanceArr.forEach(elem => {
-    const s = elem.symbol
-    const n = {
-      binance: binanceNetArr[s].networks
-      }
-    
+  // const binanceNetArr = exchangeData[17];
+  // const huobiNetArr = normalicedNetworkData(exchangeData[18]);
+
+  // console.log("HuboiNetArr", huobiNetArr);
+
+  binanceArr.forEach((elem) => {
+    const s = elem.symbol;
+    // const n = {
+    //   binance: binanceNetArr[s].networks,
+    // };
+
     const p = {
       binance: binanceObj[s].price,
       bigone: bigoneObj[s]?.price ? bigoneObj[s]?.price : null,
@@ -52,7 +103,9 @@ const getAllData = async (req, res, next) => {
       gateIo: gateIoObj[s]?.price ? gateIoObj[s]?.price : null,
       huobi: huobiObj[s]?.price ? huobiObj[s]?.price : null,
       mexc: mexcObj[s]?.price ? mexcObj[s]?.price : null,
-      cryptoDotCom: cryptoDotComObj[s]?.price ? cryptoDotComObj[s]?.price : null,
+      cryptoDotCom: cryptoDotComObj[s]?.price
+        ? cryptoDotComObj[s]?.price
+        : null,
       lbank: lbankObj[s]?.price ? lbankObj[s]?.price : null,
       bitget: bitgetObj[s]?.price ? bitgetObj[s]?.price : null,
       kraken: krakenObj[s]?.price ? krakenObj[s]?.price : null,
@@ -62,7 +115,7 @@ const getAllData = async (req, res, next) => {
       bitmart: bitmartObj[s]?.price ? bitmartObj[s]?.price : null,
       digifinex: digifinexObj[s]?.price ? digifinexObj[s]?.price : null,
       tidex: tidexObj[s]?.price ? tidexObj[s]?.price : null,
-    }
+    };
     const u = {
       binance: binanceObj[s].url,
       kucoin: kucoinObj[s]?.url ? kucoinObj[s]?.url : null,
@@ -81,13 +134,15 @@ const getAllData = async (req, res, next) => {
       digifinex: digifinexObj[s]?.url ? digifinexObj[s]?.url : null,
       tidex: tidexObj[s]?.url ? tidexObj[s]?.url : null,
       bigone: bigoneObj[s]?.url ? bigoneObj[s]?.url : null,
-    }
+    };
     const v = {
       binance: binanceObj[s].volume,
       kucoin: kucoinObj[s]?.volume ? kucoinObj[s]?.volume : null,
       bybit: bybitObj[s]?.volume ? bybitObj[s]?.volume : null,
       huobi: huobiObj[s]?.volume ? huobiObj[s]?.volume : null,
-      cryptoDotCom: cryptoDotComObj[s]?.volume ? cryptoDotComObj[s]?.volume : null,
+      cryptoDotCom: cryptoDotComObj[s]?.volume
+        ? cryptoDotComObj[s]?.volume
+        : null,
       gateIo: gateIoObj[s]?.volume ? gateIoObj[s]?.volume : null,
       bitget: bitgetObj[s]?.volume ? bitgetObj[s]?.volume : null,
       lbank: lbankObj[s]?.volume ? lbankObj[s]?.volume : null,
@@ -100,7 +155,7 @@ const getAllData = async (req, res, next) => {
       digifinex: digifinexObj[s]?.volume ? digifinexObj[s]?.volume : null,
       tidex: tidexObj[s]?.volume ? tidexObj[s]?.volume : null,
       bigone: bigoneObj[s]?.volume ? bigoneObj[s]?.volume : null,
-    }
+    };
     const b = {
       binance: binanceObj[s].bid,
       kucoin: kucoinObj[s]?.bid ? kucoinObj[s]?.bid : null,
@@ -119,7 +174,7 @@ const getAllData = async (req, res, next) => {
       digifinex: digifinexObj[s]?.bid ? digifinexObj[s]?.bid : null,
       tidex: tidexObj[s]?.bid ? tidexObj[s]?.bid : null,
       bigone: bigoneObj[s]?.bid ? bigoneObj[s]?.bid : null,
-    }
+    };
     const a = {
       binance: binanceObj[s].ask,
       kucoin: kucoinObj[s]?.ask ? kucoinObj[s]?.ask : null,
@@ -138,34 +193,42 @@ const getAllData = async (req, res, next) => {
       digifinex: digifinexObj[s]?.ask ? digifinexObj[s]?.ask : null,
       tidex: tidexObj[s]?.ask ? tidexObj[s]?.ask : null,
       bigone: bigoneObj[s]?.ask ? bigoneObj[s]?.ask : null,
-    }
-    data.push({ symbol: s, prices: p, urls: u, isComprobated: elem.isComprobated, currency: elem.currency, volume: v, bid: b, ask: a });
-  })
-  data = getProfit(minProfit,maxProfit,data)
+    };
+    data.push({
+      symbol: s,
+      prices: p,
+      urls: u,
+      isComprobated: elem.isComprobated,
+      currency: elem.currency,
+      volume: v,
+      bid: b,
+      ask: a,
+    });
+  });
+  data = getProfit(minProfit, maxProfit, data);
   return res.json(data);
+};
 
-}
-
-const getProfit = (minProfit, maxProfit, data)=>{
+const getProfit = (minProfit, maxProfit, data) => {
   let bid = [];
   let ask = [];
-  data.map(e=>{
-    bid= Object.values(e.bid);
-    ask= Object.values(e.ask);
-    let maxBid= Math.max(...bid);
-    let minAsk= Math.min(...ask.filter(e=> e!=null));
+  data.map((e) => {
+    bid = Object.values(e.bid);
+    ask = Object.values(e.ask);
+    let maxBid = Math.max(...bid);
+    let minAsk = Math.min(...ask.filter((e) => e != null));
     const profit = ((maxBid - minAsk) / maxBid) * 100;
     e.profit = parseFloat(profit.toFixed(2));
-    e.maxBid= maxBid;
-    e.minAsk= minAsk;  
-  })
-  
-  const dataFiltered = data.filter(e=> e.profit >= minProfit && e.profit<=maxProfit);
-  data= dataFiltered;
-  data.sort((a,b)=> b.profit - a.profit);
+    e.maxBid = maxBid;
+    e.minAsk = minAsk;
+  });
+
+  const dataFiltered = data.filter(
+    (e) => e.profit >= minProfit && e.profit <= maxProfit
+  );
+  data = dataFiltered;
+  data.sort((a, b) => b.profit - a.profit);
   return data;
-}
+};
 
-
-
-module.exports = { getAllData }
+module.exports = { getAllData };
