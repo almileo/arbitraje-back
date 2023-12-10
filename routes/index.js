@@ -12,7 +12,7 @@ timerRandomMessage();
 sendRandomExchange();
 
 router.get('/data/:min?/:max?', cors(), getAllData);
-router.get("/", cors(), getNetworkBinance);
+router.get("/networks", cors(), getNetworkBinance);
 
 
 //router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
