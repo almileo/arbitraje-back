@@ -6,7 +6,7 @@ const colors = require('colors');
 
 dotenv.config();
 const TELEGRAM_API = process.env.TELEGRAM_API;
-const telegramBot = new TelegramBot(TELEGRAM_API, { polling: true });
+const telegramBot = new TelegramBot(TELEGRAM_API);
 
 const initializeTelegramBot = () => {
   try {
