@@ -206,6 +206,7 @@ const getAllData = async (req, res, next) => {
     });
   });
   data = getProfit(minProfit, maxProfit, data);
+  console.log(`Datos consultados con minProfit: ${minProfit}/maxProfit: ${maxProfit}, con ${data.length} resultados`);
   return res.json(data);
 };
 
