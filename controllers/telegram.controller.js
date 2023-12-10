@@ -100,10 +100,11 @@ function randomnExchange(obj, num) {
 
 async function sendRandomExchange() {
   let bodyFree = "";
-  const response = await axios.get('https://back-coinstartbot.onrender.com/data');
-  const data = response.data;
-  const randomData = randomnExchange(data, 5)
-  randomData.forEach(e => {
+  try {
+    const response = await axios.get('https://back-coinstartbot.onrender.com/data');
+    const data = response.data;
+    const randomData = randomnExchange(data, 5)
+    randomData.forEach(e => {
     let bid = Object.values(e.bid);
     let ask = Object.values(e.ask);
     let maxBid = Math.max(...bid);
@@ -121,7 +122,10 @@ async function sendRandomExchange() {
     return e;
   });
   console.log(`Envie los mensajes al grupo ${process.env.TELEGRAM_CHAT_ID_GRUPO}`);
-
+    
+  } catch (error) {
+    console.error('Error senRandomExchange: ', error)
+  }
 }
 
 
