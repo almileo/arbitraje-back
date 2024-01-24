@@ -2,6 +2,7 @@ const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
 const crypto = require('crypto');
 const qs = require('qs');
+const { normalicedNetworkData } = require('../helpers/normalicedNetworkData');
 
 
 
@@ -39,7 +40,8 @@ const getNetworkBinance = async (req, res, next) => {
 
     const { data: binanceDataArr } = await axios.get(url, {
       headers,
-    });
+    }
+    );
 
     binanceDataArr.forEach(e=>{
       e.symbol = e.coin
@@ -66,8 +68,8 @@ const getNetworkKucoin = async (req, res, next) => {
     kucoinDataArr.forEach(e => {
       e.symbol = e.currency;
       e.networkName = e.fullName;
-      depositEnable = e.isDepositEnabled
-      whithdrawEnable = e.isWithdrawEnabled
+      e.depositEnable = e.isDepositEnabled
+      e.whithdrawEnable = e.isWithdrawEnabled
     })
     return kucoinDataArr;
   } catch (error) {

@@ -7,9 +7,9 @@ const { timerRandomMessage } = require('../controllers/time.controller');
 const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, getNetworkCryptoDotCom, getNetworkGateIo, getNetworkMexc, getNetworkOkx, getNetworkDigifinex, getNetworkBinance } = require('../controllers/network.controller');
 
 
-initializeTelegramBot();
-timerRandomMessage();
-sendRandomExchange();
+//initializeTelegramBot();
+//timerRandomMessage();
+//sendRandomExchange();
 
 router.get('/data/:min?/:max?', cors(), getAllData);
 router.get("/", cors(), getNetworkBinance);
