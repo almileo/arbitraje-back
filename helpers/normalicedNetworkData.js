@@ -7,7 +7,7 @@ const normalicedNetworkData = (failsSymbols,data) => {
     let isFail = failsSymbols.includes(key.symbol)
     normalicedNetwork[symbol] = {
       ...key,
-      networks: key.networks ? key.networks : {
+        networks: key.networks ? key.networks : {
         networkName: isFail ? null : key.networkName,
         depositEnable: isFail? null : key.depositEnable,
         whithdrawEnable: isFail? null :key.whithdrawEnable

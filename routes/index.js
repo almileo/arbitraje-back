@@ -5,6 +5,7 @@ const { getAllData } = require('../controllers/getArbitrage.controller');
 const { initializeTelegramBot, sendMessageAlert, sendRandomExchange } = require('../controllers/telegram.controller');
 const { timerRandomMessage } = require('../controllers/time.controller');
 const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, getNetworkCryptoDotCom, getNetworkGateIo, getNetworkMexc, getNetworkOkx, getNetworkDigifinex, getNetworkBinance } = require('../controllers/network.controller');
+const { getAllNetworks } = require('../controllers/getNetwork.controller');
 
 
 //initializeTelegramBot();
@@ -12,7 +13,8 @@ const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, ge
 //sendRandomExchange();
 
 router.get('/data/:min?/:max?', cors(), getAllData);
-router.get("/", cors(), getNetworkBinance);
+router.get("/", cors(), getNetworkMexc);
+router.get('/networks', cors(),getAllNetworks )
 
 
 //router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
