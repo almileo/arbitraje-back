@@ -13,7 +13,7 @@ const { getAllNetworks } = require('../controllers/getNetwork.controller');
 //sendRandomExchange();
 
 router.get('/data/:min?/:max?', cors(), getAllData);
-router.get("/", cors(), getNetworkMexc);
+router.get("/", cors(), getNetworkDigifinex);
 router.get('/networks', cors(),getAllNetworks )
 
 

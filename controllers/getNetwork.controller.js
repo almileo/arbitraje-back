@@ -19,7 +19,7 @@ const {
   failKraken,
 } = require("../utils/constants/failsSymbols");
 const { hasFailedSymbols } = require("../helpers/hasFailedSymbols");
-const { getNetworkBinance, getNetworkHuobi, getNetworkKucoin, getNetworkBybit, getNetworkGateIo, getNetworkMexc } = require("./network.controller");
+const { getNetworkBinance, getNetworkHuobi, getNetworkKucoin, getNetworkBybit, getNetworkGateIo, getNetworkMexc, getNetworkBitget, getNetworkDigifinex } = require("./network.controller");
 const { normalicedNetworkData } = require("../helpers/normalicedNetworkData");
 
 const getAllNetworks = async (req, res, next) => {
@@ -31,14 +31,19 @@ const getAllNetworks = async (req, res, next) => {
     getNetworkHuobi(),
     getNetworkGateIo(),
     getNetworkMexc(),
+    getNetworkBitget(),
+    getNetworkDigifinex(),
   ]).catch((error) => console.log("Error", error));
   const binanceNetArr = networkData[0];
-  const binanceNetObj = normalicedNetworkData(failsSymbolsBinance, networkData[0])
-  const kucoinNetObj = normalicedNetworkData(failKucoin, networkData[1])
-  const bybitNetObj = normalicedNetworkData(failByBit, networkData[2] )
-  const huobiNetObj = normalicedNetworkData(failHuobi, networkData[3]) 
-  const gateIoNetObj = normalicedNetworkData (failGateio, networkData[4])
-  const mexcNetObj = normalicedNetworkData (failMexc, networkData[5])
+  const binanceNetObj = normalicedNetworkData(failsSymbolsBinance, networkData[0]);
+  const kucoinNetObj = normalicedNetworkData(failKucoin, networkData[1]);
+  const bybitNetObj = normalicedNetworkData(failByBit, networkData[2] );
+  const huobiNetObj = normalicedNetworkData(failHuobi, networkData[3]) ;
+  const gateIoNetObj = normalicedNetworkData (failGateio, networkData[4]);
+  const mexcNetObj = normalicedNetworkData (failMexc, networkData[5]);
+  const bitGetNetObj= normalicedNetworkData (failBitget, networkData[6]);
+  const digifinexNetObj = normalicedNetworkData(failDigifinex, networkData[7]);
+
 
   binanceNetArr.forEach((elem) => {
     const s = elem.symbol;
@@ -49,7 +54,9 @@ const getAllNetworks = async (req, res, next) => {
       huobi: huobiNetObj[s]?.networks ? huobiNetObj[s]?.networks : null,
       gateIo: gateIoNetObj[s]?.networks ? gateIoNetObj[s]?.networks : null,
       mexc: mexcNetObj[s]?.networks ? mexcNetObj[s]?.networks : null,
-
+      bitget: bitGetNetObj[s]?.networks ? bitGetNetObj[s]?.networks : null,
+      digifinex : digifinexNetObj[s]?.networks ? bitGetNetObj[s]?.networks : null,
+      
     };
     data.push({
       symbol: s,

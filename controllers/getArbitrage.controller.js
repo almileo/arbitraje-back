@@ -84,7 +84,7 @@ const getAllData = async (req, res, next) => {
   const digifinexObj = hasFailedSymbols(failDigifinex, exchangeData[14]);
   const tidexObj = hasFailedSymbols(failTidex, exchangeData[15]);
   const bigoneObj = hasFailedSymbols(failBigone, exchangeData[16]);
-  
+
 
   binanceArr.forEach((elem) => {
     const s = elem.symbol;
@@ -96,9 +96,7 @@ const getAllData = async (req, res, next) => {
       gateIo: gateIoObj[s]?.price ? gateIoObj[s]?.price : null,
       huobi: huobiObj[s]?.price ? huobiObj[s]?.price : null,
       mexc: mexcObj[s]?.price ? mexcObj[s]?.price : null,
-      cryptoDotCom: cryptoDotComObj[s]?.price
-        ? cryptoDotComObj[s]?.price
-        : null,
+      cryptoDotCom: cryptoDotComObj[s]?.price ? cryptoDotComObj[s]?.price : null,
       lbank: lbankObj[s]?.price ? lbankObj[s]?.price : null,
       bitget: bitgetObj[s]?.price ? bitgetObj[s]?.price : null,
       kraken: krakenObj[s]?.price ? krakenObj[s]?.price : null,
