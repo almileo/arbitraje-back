@@ -1,20 +1,21 @@
 
-const normalicedNetworkData = (data ) => {
-    let normalicedNetwork ={}
-
-    for(const key of data){
-        let symbol = key.symbol
-
-        normalicedNetwork[symbol] = {
-            networks: networks ? networks : {
-            networkName: key.networkName,
-            depositEnable: key.depositEnable,
-            whithdrawEnable: key.whithdrawEnable
-            } }
-
+const normalicedNetworkData = (failsSymbols,data) => {
+  let normalicedNetwork = {}
+  
+  for (const key of data) {
+    let symbol = key.symbol
+    let isFail = failsSymbols.includes(key.symbol)
+    normalicedNetwork[symbol] = {
+      ...key,
+        networks: key.networks ? key.networks : {
+        networkName: isFail ? null : key.networkName,
+        depositEnable: isFail? null : key.depositEnable,
+        whithdrawEnable: isFail? null :key.whithdrawEnable
+      }
     }
-    return normalicedNetwork
+  }
+  return normalicedNetwork
 
 }
 
-module.exports = {normalicedNetworkData}
+module.exports = { normalicedNetworkData }

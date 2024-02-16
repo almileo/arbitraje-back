@@ -2,19 +2,9 @@ const axios = require('axios');
 const { ConstantURL } = require('../utils/constants/url');
 const crypto = require('crypto');
 const qs = require('qs');
+const { normalicedNetworkData } = require('../helpers/normalicedNetworkData');
 
 
-
-
-/*const n = {
-  binance: {
-    chain:[{
-      networkName:'',
-      depositEnable:true,
-      whithdrawEnable:true,
-    }]
-  }
-}*/
 const getNetworkBinance = async (req, res, next) => {
   try {
     const binanceConfig = {
@@ -39,7 +29,8 @@ const getNetworkBinance = async (req, res, next) => {
 
     const { data: binanceDataArr } = await axios.get(url, {
       headers,
-    });
+    }
+    );
 
     binanceDataArr.forEach(e=>{
       e.symbol = e.coin
@@ -66,8 +57,8 @@ const getNetworkKucoin = async (req, res, next) => {
     kucoinDataArr.forEach(e => {
       e.symbol = e.currency;
       e.networkName = e.fullName;
-      depositEnable = e.isDepositEnabled
-      whithdrawEnable = e.isWithdrawEnabled
+      e.depositEnable = e.isDepositEnabled
+      e.whithdrawEnable = e.isWithdrawEnabled
     })
     return kucoinDataArr;
   } catch (error) {
@@ -103,8 +94,8 @@ const getNetworkBybit = async (req, res, next) => {
       e.networks = e.chains.map((c) => {
         networkName = c.chainType
         depositEnable = c.chainDeposit == '1' ? true : false
-        withdrawEnable = c.chainWithdraw == '1' ? true : false
-        return { networkName, depositEnable, withdrawEnable }
+        whithdrawEnable = c.chainWithdraw == '1' ? true : false
+        return { networkName, depositEnable, whithdrawEnable }
       })
 
     })
@@ -126,9 +117,8 @@ const getNetworkHuobi = async (req, res, next) => {
       e.symbol = e.currency.toUpperCase();
       e.networkName = e.dn
       e.depositEnable = e.de
-      e.withdrawable = e.we
+      e.whithdrawEnable = e.we
     })
-
     return huobiDataArr;
   } catch (error) {
     console.error('Error de APINetwork de Huobi', error);
@@ -186,7 +176,7 @@ const getNetworkGateIo = async (req, res, next) => {
     gateIoDataArr.forEach(e => {
       e.symbol = e.currency.split('_')[0];
       e.depositEnable = !e.deposit_disabled
-      e.withdrawEnable = !e.withdraw_disabled
+      e.whithdrawEnable = !e.withdraw_disabled
       e.networkName = e.chain
     })
     return gateIoDataArr;
@@ -200,21 +190,20 @@ const getNetworkMexc = async (req, res, next) => {
   try {
     const dataMexc = await axios.get(ConstantURL.mexc.url_networks);
     const mexcDataArr = dataMexc.data.data;
-    const regex = /\(([^)]+)\)/;
     mexcDataArr.forEach(e => {
       e.symbol = e.currency;
-      e.networkName = e.coins.map((c => {
+      e.networks = e.coins.map((c => {
         chain = c.chain
         const startIndex = chain.indexOf('(') + 1;
         const endIndex = chain.indexOf(')');
         networkName = startIndex > 0 && endIndex > 0 ? chain.slice(startIndex, endIndex) : chain;
         depositEnable = c.is_deposit_enabled
-        withdrawEnable = c.is_withdraw_enabled
-        return { networkName, depositEnable, withdrawEnable }
+        whithdrawEnable = c.is_withdraw_enabled
+        return { networkName, depositEnable, whithdrawEnable }
       }))
 
     })
-    return mexcDataArr;
+    return mexcDataArr; 
   } catch (error) {
     console.error('Error de APINetwork de Mexc', error);
     return mexcDataArr = [];

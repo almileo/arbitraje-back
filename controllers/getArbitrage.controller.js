@@ -136,7 +136,7 @@ const getAllData = async (req, res, next) => {
       bigone: bigoneObj[s]?.url ? bigoneObj[s]?.url : null,
     };
     const v = {
-      binance: binanceObj[s].volume,
+      binance: binanceObj[s].voWlume,
       kucoin: kucoinObj[s]?.volume ? kucoinObj[s]?.volume : null,
       bybit: bybitObj[s]?.volume ? bybitObj[s]?.volume : null,
       huobi: huobiObj[s]?.volume ? huobiObj[s]?.volume : null,
