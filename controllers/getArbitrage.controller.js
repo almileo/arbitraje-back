@@ -38,7 +38,7 @@ const {
   failKraken,
 } = require("../utils/constants/failsSymbols");
 const { hasFailedSymbols } = require("../helpers/hasFailedSymbols");
-const { getNetworkBinance, getNetworkHuobi, getNetworkKucoin, getNetworkBybit, getNetworkGateIo, getNetworkMexc } = require("./network.controller");
+const { getNetworkBinance, getNetworkHuobi } = require("./network.controller");
 const { normalicedNetworkData } = require("../helpers/normalicedNetworkData");
 
 const getAllData = async (req, res, next) => {
@@ -63,8 +63,8 @@ const getAllData = async (req, res, next) => {
     getDataDigifinex(),
     getDataTidex(),
     getDataBigone(),
-
-
+    // getNetworkBinance(),
+    // getNetworkHuobi(),
   ]).catch((error) => console.log("Error", error));
   const binanceArr = exchangeData[0];
   const binanceObj = hasFailedSymbols(failsSymbolsBinance, exchangeData[0]);
@@ -84,10 +84,17 @@ const getAllData = async (req, res, next) => {
   const digifinexObj = hasFailedSymbols(failDigifinex, exchangeData[14]);
   const tidexObj = hasFailedSymbols(failTidex, exchangeData[15]);
   const bigoneObj = hasFailedSymbols(failBigone, exchangeData[16]);
+  // const binanceNetArr = exchangeData[17];
+  // const huobiNetArr = normalicedNetworkData(exchangeData[18]);
 
+  // console.log("HuboiNetArr", huobiNetArr);
 
   binanceArr.forEach((elem) => {
     const s = elem.symbol;
+    // const n = {
+    //   binance: binanceNetArr[s].networks,
+    // };
+
     const p = {
       binance: binanceObj[s].price,
       bigone: bigoneObj[s]?.price ? bigoneObj[s]?.price : null,
@@ -96,7 +103,9 @@ const getAllData = async (req, res, next) => {
       gateIo: gateIoObj[s]?.price ? gateIoObj[s]?.price : null,
       huobi: huobiObj[s]?.price ? huobiObj[s]?.price : null,
       mexc: mexcObj[s]?.price ? mexcObj[s]?.price : null,
-      cryptoDotCom: cryptoDotComObj[s]?.price ? cryptoDotComObj[s]?.price : null,
+      cryptoDotCom: cryptoDotComObj[s]?.price
+        ? cryptoDotComObj[s]?.price
+        : null,
       lbank: lbankObj[s]?.price ? lbankObj[s]?.price : null,
       bitget: bitgetObj[s]?.price ? bitgetObj[s]?.price : null,
       kraken: krakenObj[s]?.price ? krakenObj[s]?.price : null,
@@ -127,7 +136,7 @@ const getAllData = async (req, res, next) => {
       bigone: bigoneObj[s]?.url ? bigoneObj[s]?.url : null,
     };
     const v = {
-      binance: binanceObj[s].volume,
+      binance: binanceObj[s].voWlume,
       kucoin: kucoinObj[s]?.volume ? kucoinObj[s]?.volume : null,
       bybit: bybitObj[s]?.volume ? bybitObj[s]?.volume : null,
       huobi: huobiObj[s]?.volume ? huobiObj[s]?.volume : null,
