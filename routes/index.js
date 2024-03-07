@@ -8,7 +8,7 @@ const { timerRandomMessage } = require('../controllers/time.controller');
 const { getNetworkBitget, getNetworkKucoin, getNetworkBybit, getNetworkHuobi, getNetworkCryptoDotCom, getNetworkGateIo, getNetworkMexc, getNetworkOkx, getNetworkDigifinex, getNetworkBinance } = require('../controllers/network.controller');
 const { getAllNetworks } = require('../controllers/getNetwork.controller');
 
-//!Schemas
+//!Schemas getallnetworks
 /**
  * @swagger
  * components:
@@ -69,7 +69,227 @@ const { getAllNetworks } = require('../controllers/getNetwork.controller');
  *           type: boolean
  *         withdrawEnable:
  *           type: boolean
+ *    
  */
+//!Schemas getalldata
+
+/**
+  * @swagger
+ * components:
+ *   schemas:
+ *     SymbolData:
+ *       type: object
+ *       properties:
+ *         symbol:
+ *           type: string
+ *         prices:
+ *           $ref: '#/components/schemas/Prices'
+ *         urls:
+ *           $ref: '#/components/schemas/Urls'
+ *         isComprobated:
+ *           type: boolean
+ *         volume:
+ *           $ref: '#/components/schemas/Volume'
+ *         bid:
+ *           $ref: '#/components/schemas/Bid'
+ *         ask:
+ *           $ref: '#/components/schemas/Ask'
+ *         profit:
+ *           type: number
+ *         maxBid:
+ *           type: number
+ *         minAsk:
+ *           type: number
+ *
+ *     Prices:
+ *       type: object
+ *       properties:
+ *         binance:
+ *           type: number | null
+ *         bigone:
+ *           type: number | null
+ *         kucoin:
+ *           type: number | null
+ *         bybit:
+ *           type: number | null
+ *         gateIo:
+ *           type: number | null
+ *         huobi:
+ *           type: number | null
+ *         mexc:
+ *           type: number | null
+ *         cryptoDotCom:
+ *           type: number | null
+ *         lbank:
+ *           type: number | null
+ *         bitget:
+ *           type: number | null
+ *         kraken:
+ *           type: number | null
+ *         okx:
+ *           type: number | null
+ *         bingx:
+ *           type: number | null
+ *         bitstamp:
+ *           type: number | null
+ *         bitmart:
+ *           type: number | null
+ *         digifinex:
+ *           type: number | null
+ *         tidex:
+ *           type: number | null
+ *
+ *     Urls:
+ *       type: object
+ *       properties:
+ *         binance:
+ *           type: string | null
+ *         kucoin:
+ *           type: string | null
+ *         bybit:
+ *           type: string | null
+ *         gateIo:
+ *           type: string | null
+ *         huobi:
+ *           type: string | null
+ *         mexc:
+ *           type: string | null
+ *         cryptoDotCom:
+ *           type: string | null
+ *         lbank:
+ *           type: string | null
+ *         bitget:
+ *           type: string | null
+ *         kraken:
+ *           type: string | null
+ *         okx:
+ *           type: string | null
+ *         bingx:
+ *           type: string | null
+ *         bitstamp:
+ *           type: string | null
+ *         bitmart:
+ *           type: string | null
+ *         digifinex:
+ *           type: string | null
+ *         tidex:
+ *           type: string | null
+ *         bigone:
+ *           type: string | null
+ *
+ *     Volume:
+ *       type: object
+ *       properties:
+ *         kucoin:
+ *           type: string | number | null
+ *         bybit:
+ *           type: string | number | null
+ *         huobi:
+ *           type: string | number | null
+ *         cryptoDotCom:
+ *           type: string | number | null
+ *         gateIo:
+ *           type: string | number | null
+ *         bitget:
+ *           type: string | number | null
+ *         lbank:
+ *           type: string | number | null
+ *         mexc:
+ *           type: string | number | null
+ *         kraken:
+ *           type: string | number | null
+ *         okx:
+ *           type: string | number | null
+ *         bingx:
+ *           type: string | number | null
+ *         bitstamp:
+ *           type: string | number | null
+ *         bitmart:
+ *           type: string | number | null
+ *         digifinex:
+ *           type: string | number | null
+ *         tidex:
+ *           type: string | number | null
+ *         bigone:
+ *           type: string | number | null
+ *
+ *     Bid:
+ *       type: object
+ *       properties:
+ *         binance:
+ *           type: number | null
+ *         kucoin:
+ *           type: number | null
+ *         bybit:
+ *           type: number | null
+ *         huobi:
+ *           type: number | null
+ *         cryptoDotCom:
+ *           type: number | null
+ *         gateIo:
+ *           type: number | null
+ *         bitget:
+ *           type: number | null
+ *         lbank:
+ *           type: number | null
+ *         mexc:
+ *           type: number | null
+ *         kraken:
+ *           type: number | null
+ *         okx:
+ *           type: number | null
+ *         bingx:
+ *           type: number | null
+ *         bitstamp:
+ *           type: number | null
+ *         bitmart:
+ *           type: number | null
+ *         digifinex:
+ *           type: number | null
+ *         tidex:
+ *           type: number | null
+ *         bigone:
+ *           type: number | null
+ * 
+ *     Ask:
+ *       type: object
+ *       properties:
+ *         binance:
+ *           type: number | null
+ *         kucoin:
+ *           type: number | null
+ *         bybit:
+ *           type: number | null
+ *         huobi:
+ *           type: number | null
+ *         cryptoDotCom:
+ *           type: number | null
+ *         gateIo:
+ *           type: number | null
+ *         bitget:
+ *           type: number | null
+ *         lbank:
+ *           type: number | null
+ *         mexc:
+ *           type: number | null
+ *         kraken:
+ *           type: number | null
+ *         okx:
+ *           type: number | null
+ *         bingx:
+ *           type: number | null
+ *         bitstamp:
+ *           type: number | null
+ *         bitmart:
+ *           type: number | null
+ *         digifinex:
+ *           type: number | null
+ *         tidex:
+ *           type: number | null
+ *         bigone:
+ *           type: number | null
+ */
+
 
 
 // swagger
@@ -95,6 +315,8 @@ router.use(
   '/api-doc', 
   swaggerUI.serve, 
   swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
+ 
+  //!getAllNetworks
   /**
    * @swagger
    * /networks:
@@ -111,6 +333,42 @@ router.use(
    *            $ref: '#/components/schemas/NetworksResponse'
    *     
    */
+  //!GetAllData
+ /**
+ * @swagger
+ * /data/{min}/{max}:
+ *   get:
+ *     summary: Obtener datos dentro de un rango específico
+ *     tags:
+ *       - Data
+ *     parameters:
+ *       - in: path
+ *         name: min
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Valor mínimo
+ *       - in: path
+ *         name: max
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Valor máximo
+ *     responses:
+ *       '200':
+ *         description: Datos obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/SymbolData'
+ *       '400':
+ *         description: Parámetros inválidos
+ */
+
+
+
 
 //?ChatBot telegram
 //initializeTelegramBot();
@@ -119,7 +377,7 @@ router.use(
 
 
 router.get('/data/:min?/:max?', cors(), getAllData);
-router.get("/", cors(), getNetworkDigifinex);
+router.get("/test", cors(), getNetworkBybit);
 router.get('/networks', cors(),getAllNetworks )
 
 

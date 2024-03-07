@@ -27,22 +27,22 @@ const getAllNetworks = async (req, res, next) => {
   const networkData = await Promise.all([
     getNetworkBinance(),
     getNetworkKucoin(),
-    getNetworkBybit(),
     getNetworkHuobi(),
     getNetworkGateIo(),
     getNetworkMexc(),
     getNetworkBitget(),
     getNetworkDigifinex(),
+    //getNetworkBybit(),
   ]).catch((error) => console.log("Error", error));
   const binanceNetArr = networkData[0];
   const binanceNetObj = normalicedNetworkData(failsSymbolsBinance, networkData[0]);
   const kucoinNetObj = normalicedNetworkData(failKucoin, networkData[1]);
-  const bybitNetObj = normalicedNetworkData(failByBit, networkData[2] );
-  const huobiNetObj = normalicedNetworkData(failHuobi, networkData[3]) ;
-  const gateIoNetObj = normalicedNetworkData (failGateio, networkData[4]);
-  const mexcNetObj = normalicedNetworkData (failMexc, networkData[5]);
-  const bitGetNetObj= normalicedNetworkData (failBitget, networkData[6]);
-  const digifinexNetObj = normalicedNetworkData(failDigifinex, networkData[7]);
+  const huobiNetObj = normalicedNetworkData(failHuobi, networkData[2]) ;
+  const gateIoNetObj = normalicedNetworkData (failGateio, networkData[3]);
+  const mexcNetObj = normalicedNetworkData (failMexc, networkData[4]);
+  const bitGetNetObj= normalicedNetworkData (failBitget, networkData[5]);
+  const digifinexNetObj = normalicedNetworkData(failDigifinex, networkData[6]);
+  //const bybitNetObj = normalicedNetworkData(failByBit, networkData[7] );
 
 
   binanceNetArr.forEach((elem) => {
@@ -50,12 +50,12 @@ const getAllNetworks = async (req, res, next) => {
     const n = {
       binance: binanceNetObj[s]?.networks,
       kucoin: kucoinNetObj[s]?.networks ? kucoinNetObj[s]?.networks : null,
-      bybit: bybitNetObj[s]?.networks ? bybitNetObj[s]?.networks: null,
       huobi: huobiNetObj[s]?.networks ? huobiNetObj[s]?.networks : null,
       gateIo: gateIoNetObj[s]?.networks ? gateIoNetObj[s]?.networks : null,
       mexc: mexcNetObj[s]?.networks ? mexcNetObj[s]?.networks : null,
       bitget: bitGetNetObj[s]?.networks ? bitGetNetObj[s]?.networks : null,
       digifinex : digifinexNetObj[s]?.networks ? bitGetNetObj[s]?.networks : null,
+      //bybit: bybitNetObj[s]?.networks ? bybitNetObj[s]?.networks: null,
       
     };
     data.push({
