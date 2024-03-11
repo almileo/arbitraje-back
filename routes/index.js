@@ -304,7 +304,8 @@ const swaggerSpec = {
     },
     servers :[
       {
-        url: `http://localhost:${process.env.PORT || 3000}`
+        //url: `http://localhost:${process.env.PORT || 3000}`
+        url: `https://back-coinstartbot.onrender.com/`
       }
     ]
   },
