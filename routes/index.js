@@ -321,11 +321,11 @@ router.use(
    * @swagger
    * /networks:
    *  get:
-   *    summary: Get all data of the cryptocurrencys
-   *    tags: [BlockChains]
+   *    summary: Get the networks of the cryptocurrencys
+   *    tags: [Networks]
    *    responses:
    *     '200':
-   *      description: Respuesta exitosa
+   *      description: Succes response
    *      content:
    *        application/json:
    *          schema:
@@ -340,7 +340,7 @@ router.use(
  *   get:
  *     summary: Obtener datos dentro de un rango específico
  *     tags:
- *       - Data
+ *       - Arbitrage
  *     parameters:
  *       - in: path
  *         name: min
@@ -371,8 +371,8 @@ router.use(
 
 
 //?ChatBot telegram
-//initializeTelegramBot();
-//timerRandomMessage();
+initializeTelegramBot();
+timerRandomMessage();
 //sendRandomExchange();
 
 
@@ -384,8 +384,6 @@ router.get('/networks', cors(),getAllNetworks )
 //router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
 
 
-
-//router.get('/arbitraje', cors(), getArbitrageTableData)
 
 
 module.exports = router;
