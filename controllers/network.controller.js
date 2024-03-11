@@ -89,6 +89,7 @@ const getNetworkBybit = async (req, res, next) => {
       }
     })
     bybitDataArr = (data.data.result.rows);
+    console.log('bybitDataArr', data);
     bybitDataArr.forEach(e => {
       e.symbol = e.coin
       e.networks = e.chains.map((c) => {
