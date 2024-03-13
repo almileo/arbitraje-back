@@ -294,81 +294,106 @@ const { getAllNetworks } = require('../controllers/getNetwork.controller');
 
 // swagger
 const swaggerUI = require('swagger-ui-express')
-const swaggerJsDoc = require ('swagger-jsdoc')
+const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerSpec = {
-  definition : {
-    openapi : "3.0.0",
-    info : {
-      title : "CoinstarBot",
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "CoinstarBot",
       version: "1.0.0",
     },
-    servers :[
+    servers: [
       {
-        //url: `http://localhost:${process.env.PORT || 3000}`
+        url: `http://localhost:${process.env.PORT || 3000}`
+      },
+      {
         url: `https://back-coinstartbot.onrender.com/`
       }
     ]
   },
-  apis:[`${path.join(__dirname, './index.js')}`]
+  apis: [`${path.join(__dirname, './index.js')}`]
 }
 // middlewares
 router.use(
-  '/api-doc', 
-  swaggerUI.serve, 
+  '/api-doc',
+  swaggerUI.serve,
   swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
- 
-  //!getAllNetworks
-  /**
-   * @swagger
-   * /networks:
-   *  get:
-   *    summary: Get the networks of the cryptocurrencys
-   *    tags: [Networks]
-   *    responses:
-   *     '200':
-   *      description: Succes response
-   *      content:
-   *        application/json:
-   *          schema:
-   *            type: array
-   *            $ref: '#/components/schemas/NetworksResponse'
-   *     
-   */
-  //!GetAllData
- /**
+
+//!getAllNetworks
+/**
  * @swagger
- * /data/{min}/{max}:
- *   get:
- *     summary: Obtener datos dentro de un rango específico
- *     tags:
- *       - Arbitrage
- *     parameters:
- *       - in: path
- *         name: min
- *         required: true
- *         schema:
- *           type: integer
- *         description: Valor mínimo
- *       - in: path
- *         name: max
- *         required: true
- *         schema:
- *           type: integer
- *         description: Valor máximo
+ * /networks:
+ *  get:
+ *    summary: Get the networks of the cryptocurrencys
+ *    tags: [Networks]
+ *    responses:
+ *     '200':
+ *      description: Succes response
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: array
+ *            $ref: '#/components/schemas/NetworksResponse'
+ *     
+ */
+//!GetAllData
+/**
+* @swagger
+* /data/{min}/{max}:
+*   get:
+*     summary: Get data within a specific range
+*     tags:
+*       - Arbitrage
+*     parameters:
+*       - in: path
+*         name: min
+*         schema:
+*           type: integer
+*           default: 1
+*         description: Minimum value
+*       - in: path
+*         name: max
+*         schema:
+*           type: integer
+*           default: 30
+*         description: Maximum value
+*     responses:
+*       '200':
+*         description: Data obtained successfully
+*         content:
+*           application/json:
+*             schema:
+*               type: array
+*               items:
+*                 $ref: '#/components/schemas/SymbolData'
+*       '400':
+*         description: Invalid parameters
+*/
+
+//!Post Telegram
+
+/**
+ * @swagger
+ * /telegram/alert:
+ *   post:
+ *     summary: Send alert via Telegram
+ *     tags: [Telegram]
+ *     requestBody:
+ *       description: Message body for alert
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               msg:
+ *                 type: string
  *     responses:
  *       '200':
- *         description: Datos obtenidos correctamente
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/SymbolData'
+ *         description: Alert sent successfully
  *       '400':
- *         description: Parámetros inválidos
+ *         description: Error sending alert
  */
-
-
 
 
 //?ChatBot telegram
@@ -379,10 +404,10 @@ timerRandomMessage();
 
 router.get('/data/:min?/:max?', cors(), getAllData);
 router.get("/test", cors(), getNetworkBybit);
-router.get('/networks', cors(),getAllNetworks )
+router.get('/networks', cors(), getAllNetworks)
 
 
-//router.post('/telegram/alert', cors(),(req, res)=> sendMessageAlert(req, res))
+router.post('/telegram/alert', cors(), (req, res) => sendMessageAlert(req, res))
 
 
 
